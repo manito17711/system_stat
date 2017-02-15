@@ -122,6 +122,12 @@ void Server::init()
         exit(1);
     }
 
+    int enable = 1;
+    if (0 > setsockopt(serverSock, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
+    {
+        // TDOD: log error in set socket reuse..
+    }
+
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(port);
