@@ -45,7 +45,7 @@ bool Client::retrieveData()
         // std::cout << "ERROR: connecting to server..." << std::endl;
         // std::cout << strerror(errno) << std::endl;
 
-        close(sock);
+        closeSocket();
         return false;
     }
 
@@ -63,7 +63,6 @@ bool Client::retrieveData()
     report = std::__cxx11::string(buff);
 
     closeSocket();
-
     return true;
 }
 
