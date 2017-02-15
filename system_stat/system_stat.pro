@@ -1,7 +1,7 @@
-QT += core
+QT -= core
 QT -= gui
 
-TARGET = cpu_stat
+TARGET = system_stat
 CONFIG += console
 CONFIG -= app_bundle
 
