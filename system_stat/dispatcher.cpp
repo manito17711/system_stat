@@ -63,6 +63,7 @@ void Dispatcher::onConnection(int fd, ConnType type)
 
             reporter->append("<br>");
             reporter->append("-------------------------------------------");
+            reporter->append("<br>");
             reporter->append(n.ipAddr);
             reporter->append("<br>");
 

@@ -39,7 +39,7 @@ bool Client::retrieveData()
 {
     initSocket();
 
-    if (connect(sock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)) < 0)
+    if (0 > connect(sock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
     {
         // TODO: log error
         // std::cout << "ERROR: connecting to server..." << std::endl;

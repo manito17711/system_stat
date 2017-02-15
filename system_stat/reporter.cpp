@@ -12,9 +12,9 @@ void Reporter::initReport(const ConnType& type)
     if (ConnType::client == type)
     {
         report = "Localhost:";
+        this->append("<br>");
     }
 
-    this->append("<br>");
     this->append(getSysInfo());
     this->append("<br>");
     this->append(getProcLoadavg());
@@ -98,7 +98,7 @@ std::__cxx11::string Reporter::buildCPULine(std::__cxx11::string descrp, T _1min
 {
     std::stringstream ss;
     ss << descrp;
-    ss << " data:\t";
+    ss << " data: ";
     ss << "1 min( " << _1min << "% ) ";
     ss << "5 min( " << _5min << "% ) ";
     ss << "15 min( " << _15min << "% )";
