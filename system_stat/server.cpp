@@ -18,9 +18,9 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
     send(fd, data.c_str(), strlen(data.c_str()), 0);
 }
 
-void Server::startListen(std::size_t max_conn)
+void Server::startListen(std::size_t maxConn)
 {
-    if (0 == listen(serverSock, max_conn))
+    if (0 == listen(serverSock, maxConn))
     {
         std::cout << "Server listen on port " << port << std::endl;
     }

@@ -15,10 +15,13 @@ void Dispatcher::run()
 
     do
     {
+        std::cout << "-------------------------\n";
         std::cout << "Select option: ";
         std::cin >> i;
         switch (i)
         {
+        case 1:
+            break;
         case 2:
         {
             std::__cxx11::string ip;
@@ -51,7 +54,7 @@ void Dispatcher::onConnection(int fd, ConnType type)
     {
     case ConnType::client:
     {
-        // we have check all servers at the network and get their reports
+        // we check all servers at the network and get their statistics
 
         for (std::size_t i = 0; i < network->serversCount(); ++i)
         {
@@ -78,7 +81,7 @@ void Dispatcher::onConnection(int fd, ConnType type)
     }
     case ConnType::server:
 
-        // no actions are nedded
+        // no actions nedded
 
         break;
     }
