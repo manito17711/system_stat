@@ -17,7 +17,7 @@ void Network::addServer(const Node& n)
 {
     for (std::size_t i = 0; i < servers.size(); ++i)
     {
-        if (servers[i].ipAddr == n.ipAddr)
+        if (n.ipAddr == servers[i].ipAddr)
             return;
     }
 
