@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <future>
+
 #include "server.hpp"
 #include "client.hpp"
 #include "reporter.hpp"

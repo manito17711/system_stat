@@ -56,6 +56,35 @@ void Dispatcher::onConnection(int fd, ConnType type)
     {
         // we check all servers at the network and get their statistics
 
+        /*
+         *
+         *      std::vector<std::__cxx11::string> servers;
+                std::vector<std::shared_ptr<Client>> clients;
+                std::vector<std::future<bool>> futuresReports;
+
+                for (int i = 0; i < network.serversCount(); ++i)
+                {
+                    auto cl = std::make_shared<Client>();
+                    cl->setServer(network.getServer(i));
+                    clients.push_back(cl);
+
+                    futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, cl.get()));
+                }
+
+                for (int i = 0; i < futuresReports.size(); ++i)
+                {
+                    if (futuresReports[i].get())
+                    {
+                        reporter->append(clients[i]->getReport());
+                    }
+                    else
+                    {
+                        reporter->append("Error: No connection with server.");
+                    }
+                }
+
+        */
+
         for (std::size_t i = 0; i < network->serversCount(); ++i)
         {
             Node n = network->getServer(i);
@@ -88,5 +117,4 @@ void Dispatcher::onConnection(int fd, ConnType type)
     }
 
     server->sendData(fd, reporter->getReport());
-    //server->closeSocketDescr(fd);
 }
