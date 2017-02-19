@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <future>
 
 #include "node.hpp"
 
@@ -14,6 +15,9 @@ private:
 
 
     std::vector<Node> servers;
+    std::vector<int> onlineServers;
+
+    void isOnline();
 
 public:
     explicit Network();
@@ -23,6 +27,7 @@ public:
 
     // TODO: add option to remove server from network
 
+    void checkOnlineServers();
     Node& getServer(std::size_t idx);
     std::size_t serversCount() const;
 };

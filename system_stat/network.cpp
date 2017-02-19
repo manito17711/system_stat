@@ -1,6 +1,7 @@
 #include "network.hpp"
 
 
+
 Network::Network()
 {
 }
@@ -14,10 +15,25 @@ void Network::addServer(std::__cxx11::string ipAddr, std::size_t port)
 
 void Network::addServer(const Node& n)
 {
-    // TODO: check for duplication.. or switch to set
+    for (std::size_t i = 0; i < servers.size(); ++i)
+    {
+        if (servers[i].ipAddr == n.ipAddr)
+            return;
+    }
 
     servers.push_back(n);
 }
+
+void Network::checkOnlineServers()
+{
+
+}
+
+void Network::isOnline()
+{
+
+}
+
 
 Node& Network::getServer(std::size_t idx)
 {
