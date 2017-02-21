@@ -68,7 +68,7 @@ void Dispatcher::onConnection(int fd, ConnType type)
     {
         // we check all servers at the network and get their statistics
 
-        std::vector<std::shared_ptr<Client>> clients;
+        std::vector<std::unique_ptr<Client>> clients;
         std::vector<std::future<bool>> futuresReports;
 
 #ifdef ASYNC_MODE
