@@ -3,7 +3,7 @@
 #define ASYNC_MODE
 //#define SYNC_MODE
 //#define PRINT_TIME
-//#define LOAD_TEST_SERVERS
+#define LOAD_TEST_SERVERS
 
 Dispatcher::Dispatcher(Server *srv, Client *cln, Reporter *rpt, Network *ntw)
     : server(srv), client(cln), reporter(rpt), network(ntw)
@@ -77,7 +77,7 @@ void Dispatcher::onConnection(int fd, ConnType type)
 #endif
         for (std::size_t i = 0; i < network->serversCount(); ++i)
         {
-            std::unique_ptr<Client> cl = std::make_unique<Client>();
+            std::unique_ptr<Client> cl (new Client());
             cl->setServer(network->getServer(i));
 
             futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, cl.get()));
