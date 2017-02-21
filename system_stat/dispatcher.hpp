@@ -13,7 +13,7 @@ class Dispatcher
 {
 private:
 	Server *server;
-	Client *client;
+    Client *client; // possible unused parameter...
     Reporter *reporter;
     Network *network;
 
