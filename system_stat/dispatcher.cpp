@@ -18,7 +18,8 @@ void Dispatcher::run()
     int i = 0;
 
 #ifdef LOAD_TEST_SERVERS
-    for (int i = 129; i < 133; ++i)
+    // 64 testing servers..
+    for (int i = 140; i < 204; ++i)
     {
         std::string s = "192.168.194." + std::to_string(i);
         network->addServer(s, 13651);
