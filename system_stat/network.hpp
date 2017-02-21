@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <future>
 
 #include "node.hpp"
 
@@ -12,7 +11,6 @@ private:
     // TODO: write all servers to file and load data from there
     std::__cxx11::string dir;       // working directory
     std::__cxx11::string fileName;  // file with servers data - ip, port, etc...
-
 
     std::vector<Node> servers;
 
