@@ -24,17 +24,6 @@ void Network::addServer(const Node& n)
     servers.push_back(n);
 }
 
-void Network::checkOnlineServers()
-{
-
-}
-
-void Network::isOnline()
-{
-
-}
-
-
 Node& Network::getServer(std::size_t idx)
 {
     return servers[idx];
