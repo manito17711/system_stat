@@ -24,6 +24,8 @@ void Dispatcher::run()
         std::string s = "192.168.194." + std::to_string(i);
         network->addServer(s, 13651);
     }
+
+    std::cout << "64 testing server imported.\n";
 #endif
 
     do
