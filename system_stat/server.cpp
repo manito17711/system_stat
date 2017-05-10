@@ -37,6 +37,7 @@ void Server::startListen(std::size_t maxConn)
     {
         struct sockaddr_in addr;
         socklen_t addrlen = sizeof(addr);
+        ssize_t received = 0;
 
         int clientSock = accept(serverSock, (struct sockaddr*) &addr, &addrlen);
         if (-1 != clientSock)
@@ -44,7 +45,7 @@ void Server::startListen(std::size_t maxConn)
             int buffSize = 1024;
             char buff[buffSize];
 
-            read(clientSock, buff, buffSize);
+            received = read(clientSock, buff, buffSize);
             ConnType type = defRequestType(buff);
 
             if (!favicon(buff))
@@ -122,6 +123,7 @@ void Server::init()
         exit(1);
     }
 
+    // set socket to be reused
     int enable = 1;
     if (0 > setsockopt(serverSock, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
     {

@@ -25,7 +25,7 @@ void Dispatcher::run()
         network->addServer(s, 13651);
     }
 
-    std::cout << "64 testing server imported.\n";
+    std::cout << "64 testing servers imported.\n";
 #endif
 
     do
