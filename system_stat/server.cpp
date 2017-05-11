@@ -114,7 +114,7 @@ int Server::closeSocketDescr(int &fd)
 
 void Server::init()
 {
-    serverSock = socket(AF_INET, SOCK_STREAM, 0);
+    serverSock = socket (AF_INET, SOCK_STREAM, 0);
     if (0 > serverSock)
     {
         // TODO: log on error
