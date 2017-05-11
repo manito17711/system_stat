@@ -14,7 +14,9 @@ SOURCES += main.cpp \
     server.cpp \
     network.cpp \
     node.cpp \
-    protocolimpl.cpp
+    protocoltypetcp.cpp \
+    protocoltypeudp.cpp \
+    protocoltype.cpp
 
 HEADERS += \
     client.hpp \
@@ -24,5 +26,7 @@ HEADERS += \
     connection_types.hpp \
     network.hpp \
     node.hpp \
-    protocolimpl.h
+    protocoltypetcp.hpp \
+    protocoltypeudp.hpp \
+    protocoltype.hpp
 

@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 
-Server::Server(std::size_t port, ProtocolType protocol) : port(port), protocol(protocol)
+Server::Server(std::size_t port) : port(port)
 {
     init();
 }
@@ -97,11 +97,6 @@ bool Server::favicon(const char* req)
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
     pFunc_onConn = func;
-}
-
-const ProtocolType &Server::getProtocolType() const
-{
-    return protocol;
 }
 
 int Server::closeServerSocketDescr()
