@@ -13,7 +13,8 @@ SOURCES += main.cpp \
     reporter.cpp \
     server.cpp \
     network.cpp \
-    node.cpp
+    node.cpp \
+    protocolimpl.cpp
 
 HEADERS += \
     client.hpp \
@@ -22,5 +23,6 @@ HEADERS += \
     server.hpp \
     connection_types.hpp \
     network.hpp \
-    node.hpp
+    node.hpp \
+    protocolimpl.h
 

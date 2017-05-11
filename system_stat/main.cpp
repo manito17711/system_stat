@@ -5,6 +5,8 @@
 #include "dispatcher.hpp"
 #include "network.hpp"
 
+#include "protocol_types.hpp"
+
 const std::size_t DEFAULT_PORT = 13651;
 
 int main(int argc, char *argv[])
@@ -15,7 +17,7 @@ int main(int argc, char *argv[])
         port = std::atoi(argv[1]);
     }
 
-    Server srv (port);
+    Server srv (port, ProtocolType::UDP);
     Client cln;
     Reporter rpt;
     Network ntw;

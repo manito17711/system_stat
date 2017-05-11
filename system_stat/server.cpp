@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 
-Server::Server(std::size_t port) : port(port)
+Server::Server(std::size_t port, ProtocolType protocol) : port(port), protocol(protocol)
 {
     init();
 }
@@ -46,7 +46,7 @@ void Server::startListen(std::size_t maxConn)
             char buff[buffSize];
 
             received = read(clientSock, buff, buffSize);
-            ConnType type = defRequestType(buff);
+            ConnType type = defineConnectionType(buff);
 
             if (!favicon(buff))
             {
@@ -65,7 +65,7 @@ void Server::startListen(std::size_t maxConn)
     }
 }
 
-ConnType Server::defRequestType(const char* req)
+ConnType Server::defineConnectionType(const char* req)
 {
     int l = strlen(req);
     if (3 > l)
@@ -97,6 +97,11 @@ bool Server::favicon(const char* req)
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
     pFunc_onConn = func;
+}
+
+const ProtocolType &Server::getProtocolType() const
+{
+    return protocol;
 }
 
 int Server::closeServerSocketDescr()
