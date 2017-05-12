@@ -15,11 +15,16 @@ Server::~Server()
 
 void Server::sendData(int fd, const std::__cxx11::string& data)
 {
-    send(fd, data.c_str(), strlen(data.c_str()), 0);
+    //send(fd, data.c_str(), strlen(data.c_str()), 0);
+
+    sendto(fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &si_other_len, si_other_len);
+    std::cout << "data to send: " << data << std::endl;
 }
 
 void Server::startListen(std::size_t maxConn)
 {
+    // tcp
+    /*
     if (0 == listen(serverSock, maxConn))
     {
         std::cout << "Server listen on port " << port << std::endl;
@@ -31,7 +36,6 @@ void Server::startListen(std::size_t maxConn)
 
         exit(1);
     }
-
 
     for (;;)
     {
@@ -62,6 +66,29 @@ void Server::startListen(std::size_t maxConn)
         }
 
         closeSocketDescr(clientSock);
+    }
+    */
+
+    for (;;)
+    {
+        int buffSize = 1024;
+        char buff[buffSize];
+
+        ssize_t received = recvfrom(serverSock, buff, buffSize, 0, (struct sockaddr*) &si_other, &si_other_len);
+        std::cout << buff << std::endl;
+
+        if (received > 0)
+        {
+            ConnType type = defineConnectionType(buff);
+
+            if (!favicon(buff))
+            {
+                std::cout << "Incoming call: " << inet_ntoa(si_other.sin_addr) << " Type: ";
+                (type == ConnType::client) ? std::cout << "client\n" : std::cout << "server\n";
+
+                pFunc_onConn(serverSock, type);
+            }
+        }
     }
 }
 
@@ -114,6 +141,8 @@ int Server::closeSocketDescr(int &fd)
 
 void Server::init()
 {
+    // tcp
+    /*
     serverSock = socket (AF_INET, SOCK_STREAM, 0);
     if (0 > serverSock)
     {
@@ -142,6 +171,37 @@ void Server::init()
         if (-1 != serverSock)
         {
             close(serverSock);
+        }
+
+        exit(1);
+    }
+    */
+
+
+
+    // udp
+    serverSock = socket (AF_INET, SOCK_DGRAM, 0);
+    if (0 > serverSock)
+    {
+        // TODO: log on error
+        // std::cout << "ERROR: socket - cannot create an endpoint for communication!" << std::endl;
+
+        exit(1);
+    }
+
+
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(port);
+
+    if (0 > bind(serverSock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
+    {
+        // TODO: log on error
+        // cout << strerror(errno) << endl;
+
+        if (-1 != serverSock)
+        {
+            close (serverSock);
         }
 
         exit(1);

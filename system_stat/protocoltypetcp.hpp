@@ -6,7 +6,10 @@
 class ProtocolTypeTCP : public ProtocolType
 {
 public:
-    ProtocolTypeTCP();
+    ProtocolTypeTCP(int port);
+
+    virtual void run();
+    virtual void initSocketDescriptor();
 };
 
 #endif // PROTOCOLTYPETCP_H

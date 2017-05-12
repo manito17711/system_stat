@@ -21,6 +21,8 @@ private:
     std::size_t port;
 
     struct sockaddr_in serverAddr;
+    struct sockaddr_in si_other;
+    socklen_t si_other_len;
     int serverSock;
 
     void init();
