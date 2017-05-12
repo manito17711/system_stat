@@ -174,6 +174,12 @@ void Server::init()
     }
     */
 
+    // set socket to be reused
+    int enable = 1;
+    if (0 > setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
+    {
+        // TDOD: log error in set socket reuse..
+    }
 
 
     // udp
