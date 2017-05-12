@@ -5,3 +5,7 @@ build-system_stat-Desktop_Qt_5_8_0_GCC_64bit-Release/
 
 build-system_stat-Desktop_Qt_5_5_1_GCC_32bit-Debug/
 build-system_stat-Desktop_Qt_5_5_1_GCC_32bit-Release/
+
+build-udp_client-Desktop_Qt_5_8_0_GCC_64bit-Debug/
+build-udp_client-Desktop_Qt_5_8_0_GCC_64bit-Release/
+
