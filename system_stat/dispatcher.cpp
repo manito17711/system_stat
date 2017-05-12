@@ -1,7 +1,7 @@
 #include "dispatcher.hpp"
 
-//#define ASYNC_MODE
-#define SYNC_MODE
+#define ASYNC_MODE
+//#define SYNC_MODE
 //#define PRINT_TIME
 #define LOAD_TEST_SERVERS
 
@@ -18,7 +18,7 @@ void Dispatcher::run()
     int i = 0;
 
 #ifdef LOAD_TEST_SERVERS
-    // 64 testing servers..
+    // 6 testing servers..
     for (int i = 140; i < 146; ++i)
     {
         std::string s = "192.168.194." + std::to_string(i);

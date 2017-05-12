@@ -17,7 +17,7 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
 {
     //send(fd, data.c_str(), strlen(data.c_str()), 0);
 
-    sendto(fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &si_other_len, si_other_len);
+    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &si_other, si_other_len);
     std::cout << "data to send: " << data << std::endl;
 }
 
@@ -25,7 +25,7 @@ void Server::startListen(std::size_t maxConn)
 {
     // tcp
     /*
-    if (0 == listen(serverSock, maxConn))
+    if (0 == listen(sock_fd, maxConn))
     {
         std::cout << "Server listen on port " << port << std::endl;
     }
@@ -43,7 +43,7 @@ void Server::startListen(std::size_t maxConn)
         socklen_t addrlen = sizeof(addr);
         ssize_t received = 0;
 
-        int clientSock = accept(serverSock, (struct sockaddr*) &addr, &addrlen);
+        int clientSock = accept(sock_fd, (struct sockaddr*) &addr, &addrlen);
         if (-1 != clientSock)
         {
             int buffSize = 1024;
@@ -71,10 +71,7 @@ void Server::startListen(std::size_t maxConn)
 
     for (;;)
     {
-        int buffSize = 1024;
-        char buff[buffSize];
-
-        ssize_t received = recvfrom(serverSock, buff, buffSize, 0, (struct sockaddr*) &si_other, &si_other_len);
+        ssize_t received = recvfrom(sock_fd, buff, buffSize, 0, (struct sockaddr*) &si_other, &si_other_len);
         std::cout << buff << std::endl;
 
         if (received > 0)
@@ -86,7 +83,7 @@ void Server::startListen(std::size_t maxConn)
                 std::cout << "Incoming call: " << inet_ntoa(si_other.sin_addr) << " Type: ";
                 (type == ConnType::client) ? std::cout << "client\n" : std::cout << "server\n";
 
-                pFunc_onConn(serverSock, type);
+                pFunc_onConn(sock_fd, type);
             }
         }
     }
@@ -128,7 +125,7 @@ void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 
 int Server::closeServerSocketDescr()
 {
-    return closeSocketDescr(serverSock);
+    return closeSocketDescr(sock_fd);
 }
 
 int Server::closeSocketDescr(int &fd)
@@ -143,8 +140,8 @@ void Server::init()
 {
     // tcp
     /*
-    serverSock = socket (AF_INET, SOCK_STREAM, 0);
-    if (0 > serverSock)
+    sock_fd = socket (AF_INET, SOCK_STREAM, 0);
+    if (0 > sock_fd)
     {
         // TODO: log on error
         // std::cout << "ERROR: socket - cannot create an endpoint for communication!" << std::endl;
@@ -154,7 +151,7 @@ void Server::init()
 
     // set socket to be reused
     int enable = 1;
-    if (0 > setsockopt(serverSock, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
+    if (0 > setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
     {
         // TDOD: log error in set socket reuse..
     }
@@ -163,14 +160,14 @@ void Server::init()
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(port);
 
-    if (0 > bind(serverSock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
+    if (0 > bind(sock_fd, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
     {
         // TODO: log on error
         // cout << strerror(errno) << endl;
 
-        if (-1 != serverSock)
+        if (-1 != sock_fd)
         {
-            close(serverSock);
+            close(sock_fd);
         }
 
         exit(1);
@@ -180,8 +177,8 @@ void Server::init()
 
 
     // udp
-    serverSock = socket (AF_INET, SOCK_DGRAM, 0);
-    if (0 > serverSock)
+    sock_fd = socket (AF_INET, SOCK_DGRAM, 0);
+    if (0 > sock_fd)
     {
         // TODO: log on error
         // std::cout << "ERROR: socket - cannot create an endpoint for communication!" << std::endl;
@@ -194,14 +191,14 @@ void Server::init()
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(port);
 
-    if (0 > bind(serverSock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
+    if (0 > bind(sock_fd, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
     {
         // TODO: log on error
         // cout << strerror(errno) << endl;
 
-        if (-1 != serverSock)
+        if (-1 != sock_fd)
         {
-            close (serverSock);
+            close (sock_fd);
         }
 
         exit(1);

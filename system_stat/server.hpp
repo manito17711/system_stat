@@ -14,6 +14,8 @@
 
 #include "connection_types.hpp"
 
+const int buffSize = 1024;
+
 class Server
 {
 private:
@@ -23,7 +25,9 @@ private:
     struct sockaddr_in serverAddr;
     struct sockaddr_in si_other;
     socklen_t si_other_len;
-    int serverSock;
+    int sock_fd;
+
+    char buff[buffSize];
 
     void init();
     ConnType defineConnectionType(const char* req); // define request - server or client
