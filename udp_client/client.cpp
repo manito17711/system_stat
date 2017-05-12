@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client::Client()
+Client::Client(std::string server, int port) : SERVER(server), PORT(port)
 {
     init();
 }
@@ -18,7 +18,7 @@ void Client::init()
     si_other.sin_family = AF_INET;
     si_other.sin_port = htons(PORT);
 
-    if (inet_aton(SERVER , &si_other.sin_addr) == 0)
+    if (inet_aton(SERVER.c_str(), &si_other.sin_addr) == 0)
     {
         fprintf(stderr, "inet_aton() failed\n");
         exit(1);
