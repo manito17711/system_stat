@@ -14,7 +14,7 @@
 
 #include "connection_types.hpp"
 
-const int buffSize = 1024;
+const int BUFF_SIZE = 1024;
 
 class Server
 {
@@ -22,12 +22,12 @@ private:
     std::function<void(int fd, ConnType type)> pFunc_onConn;
     std::size_t port;
 
-    struct sockaddr_in serverAddr;
+    struct sockaddr_in si_in;
     struct sockaddr_in si_other;
     socklen_t si_other_len;
     int sock_fd;
 
-    char buff[buffSize];
+    char buff[BUFF_SIZE];
 
     void init();
     ConnType defineConnectionType(const char* req); // define request - server or client

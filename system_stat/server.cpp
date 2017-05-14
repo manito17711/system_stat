@@ -71,7 +71,7 @@ void Server::startListen(std::size_t maxConn)
 
     for (;;)
     {
-        ssize_t received = recvfrom(sock_fd, buff, buffSize, 0, (struct sockaddr*) &si_other, &si_other_len);
+        ssize_t received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr*) &si_other, &si_other_len);
         std::cout << buff << std::endl;
 
         if (received > 0)
@@ -140,7 +140,7 @@ void Server::init()
 {
     // tcp
     /*
-    sock_fd = socket (AF_INET, SOCK_STREAM, 0);
+    sock_fd = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (0 > sock_fd)
     {
         // TODO: log on error
@@ -183,21 +183,21 @@ void Server::init()
 
 
     // udp
-    sock_fd = socket (AF_INET, SOCK_DGRAM, 0);
+    sock_fd = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (0 > sock_fd)
     {
         // TODO: log on error
-        // std::cout << "ERROR: socket - cannot create an endpoint for communication!" << std::endl;
+        // std::cout << "ERROR: socket()" << std::endl;
 
         exit(1);
     }
 
 
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(port);
+    si_in.sin_family = AF_INET;
+    si_in.sin_addr.s_addr = INADDR_ANY;
+    si_in.sin_port = htons(port);
 
-    if (0 > bind(sock_fd, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
+    if (0 > bind(sock_fd, (struct sockaddr*) &si_in, sizeof(si_in)))
     {
         // TODO: log on error
         // cout << strerror(errno) << endl;
