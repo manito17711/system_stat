@@ -1,32 +1,33 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <iostream>
 #include <string>
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <fcntl.h>
 #include <unistd.h>
-
-#define BUFLEN 1024  //Max length of buffer
 
 class Client
 {
 public:
-    explicit Client(std::string server, int port);
+    explicit Client(std::__cxx11::string server, int port);
 
 private:
-    const std::string SERVER;
+    static const size_t BUFF_SIZE = 1024;
+
+    const std::__cxx11::string SERVER;
     const int PORT;
 
     struct sockaddr_in si_other;
     socklen_t slen;
     int sock_fd, i;
-    char buf[BUFLEN];
-    char message[BUFLEN];
+    char buff[BUFF_SIZE];
+    char message[BUFF_SIZE];
 
     void init();
-    void die (const char* str);
 };
 
 #endif // CLIENT_H

@@ -1,4 +1,4 @@
-#include <stdio.h>
+
 #include <client.h>
 
 using namespace std;
