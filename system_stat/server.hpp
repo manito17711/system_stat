@@ -41,7 +41,7 @@ public:
     int closeSocketDescr(int &fd);
     int closeServerSocketDescr();
 
-    void startListen(std::size_t maxConn = 5);
+    void startListen(std::size_t maxConn = 5); // max conn = 5 - TCP connection..
     void sendData(int fd, const std::__cxx11::string& data);
     void setOnConn(std::function<void(int fd, ConnType type)> const &func);
 };

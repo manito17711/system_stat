@@ -19,9 +19,9 @@ public:
 
     const int& getSockFd() const;
     const int& getPort() const;
-    const int& getSiMeLen() const;
-    const struct sockaddr_in& getSiMe() const;
-    const struct sockaddr_in& getSiOther() const;
+    const int& getSiLhsLength() const;
+    const struct sockaddr_in& getSiLhs() const;
+    const struct sockaddr_in& getSiRhs() const;
 
     int closeSocketFd();
 

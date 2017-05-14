@@ -5,7 +5,7 @@ ProtocolType::ProtocolType(int port) : port(port) {}
 
 ProtocolType::~ProtocolType()
 {
-    if (sock_fd != -1)
+    if (-1 == sock_fd)
     {
         closeSocketFd();
     }
@@ -21,17 +21,17 @@ const int &ProtocolType::getPort() const
     return port;
 }
 
-const int &ProtocolType::getSiMeLen() const
+const int &ProtocolType::getSiLhsLength() const
 {
     return slen;
 }
 
-const sockaddr_in& ProtocolType::getSiMe() const
+const sockaddr_in& ProtocolType::getSiLhs() const
 {
     return si_me;
 }
 
-const sockaddr_in& ProtocolType::getSiOther() const
+const sockaddr_in& ProtocolType::getSiRhs() const
 {
     return si_other;
 }

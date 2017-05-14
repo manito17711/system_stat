@@ -17,7 +17,7 @@ void Reporter::initReport(const ConnType& type)
 
     this->append(getSysInfo());
     this->append("<br>");
-    this->append(getProcLoadavg());
+    this->append(getProcLoadAvg());
 }
 
 void Reporter::setHTMLHeaders()
@@ -65,7 +65,7 @@ std::__cxx11::string Reporter::getSysInfo()
     return str;
 }
 
-std::__cxx11::string Reporter::getProcLoadavg()
+std::__cxx11::string Reporter::getProcLoadAvg()
 {
     std::__cxx11::string procLoadavg ("/proc/loadavg"), line, str;
     std::ifstream file (procLoadavg);
@@ -82,7 +82,7 @@ std::__cxx11::string Reporter::getProcLoadavg()
         iss >> _5min;
         iss >> _15min;
 
-        str = buildCPULine("Proc Loadavg", _1min, _5min, _15min);
+        str = buildCPULine("Proc LoadAvg", _1min, _5min, _15min);
     }
     else
     {
