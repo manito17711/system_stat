@@ -19,8 +19,8 @@ const int BUFF_SIZE = 1024;
 class Server
 {
 private:
+    const std::size_t PORT;
     std::function<void(int fd, ConnType type)> pFunc_onConn;
-    std::size_t port;
 
     struct sockaddr_in si_in;
     struct sockaddr_in si_other;

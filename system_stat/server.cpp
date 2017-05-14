@@ -1,7 +1,7 @@
 #include "server.hpp"
 
 
-Server::Server(std::size_t port) : port(port)
+Server::Server(std::size_t port) : PORT(port)
 {
     init();
 }
@@ -10,7 +10,10 @@ Server::~Server()
 {
     // TDOO: check if return -1 and log...
 
-    closeServerSocketDescr();
+    if (-1 != sock_fd)
+    {
+        closeServerSocketDescr();
+    }
 }
 
 void Server::sendData(int fd, const std::__cxx11::string& data)
@@ -195,7 +198,7 @@ void Server::init()
 
     si_in.sin_family = AF_INET;
     si_in.sin_addr.s_addr = INADDR_ANY;
-    si_in.sin_port = htons(port);
+    si_in.sin_port = htons(PORT);
 
     if (0 > bind(sock_fd, (struct sockaddr*) &si_in, sizeof(si_in)))
     {
