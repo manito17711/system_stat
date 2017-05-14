@@ -18,8 +18,11 @@
 class Client
 {
 private:
-    int sock;
-    struct sockaddr_in serverAddr;
+    static const size_t BUFF_SIZE = 1024;
+
+    char buff[BUFF_SIZE];
+    int sock_fd;
+    struct sockaddr_in srv_rhs;
     socklen_t slen;
     struct hostent *hp;
     std::__cxx11::string report;
@@ -32,5 +35,5 @@ public:
 
     void setServer(const Node&);
     bool retrieveData();
-    std::__cxx11::string getReport() const;
+    const std::__cxx11::string& getReport() const;
 };

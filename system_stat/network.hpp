@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <vector>
+#include <deque>
 
 #include "node.hpp"
 
@@ -12,7 +12,7 @@ private:
     std::__cxx11::string dir;       // working directory
     std::__cxx11::string fileName;  // file with servers data - ip, port, etc...
 
-    std::vector<Node> servers;
+    std::deque<Node> servers;
 
 public:
     explicit Network();

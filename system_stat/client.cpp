@@ -14,15 +14,15 @@ void Client::setServer(const Node& node)
         // TODO: log error
         //std::cout << "ERROR: get server by name";
 
-        close(sock);
+        close(sock_fd);
         exit(1);
     }
 
-    memcpy(&serverAddr.sin_addr, hp->h_addr, hp->h_length);
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(node.port);
+    memcpy(&srv_rhs.sin_addr, hp->h_addr, hp->h_length);
+    srv_rhs.sin_family = AF_INET;
+    srv_rhs.sin_port = htons(node.port);
 
-    slen = sizeof(serverAddr);
+    slen = sizeof(srv_rhs);
 }
 
 void Client::initSocket()
@@ -41,9 +41,12 @@ void Client::initSocket()
     */
 
     // udp
-    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    fcntl(sock, F_SETFL, O_NONBLOCK);
-    if (0 > sock)
+    sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    // set connection non-blocking
+    fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+
+    if (0 > sock_fd)
     {
         // TDOO: log error
         // std::cout << "ERROR: init socket.";
@@ -57,9 +60,16 @@ bool Client::retrieveData()
 {
     initSocket();
 
+    // send "SRV" to server - that is how we say to the server the request is not
+    buff[0] = 'S';
+    buff[1] = 'R';
+    buff[2] = 'V';
+    buff[3] = '\0';
+
+
     // tcp
     /*
-    if (0 > connect(sock, (struct sockaddr*) &serverAddr, sizeof(serverAddr)))
+    if (0 > connect(sock_fd, (struct sockaddr*) &srv_rhs, slen))
     {
         // TODO: log error
         // std::cout << "ERROR: connecting to server..." << std::endl;
@@ -67,25 +77,24 @@ bool Client::retrieveData()
 
         closeSocket();
         return false;
-    }
+    }   
+
+    send(sock, buff, BUFF_SIZE, 0);
+    recv(sock, buff, BUFF_SIZE, 0);
     */
+
 
     // udp
 
-    int bufferSize = 1024;
-    char buff[bufferSize];
+    sendto(sock_fd, buff, 3, 0, (struct sockaddr *) &srv_rhs, slen);
+    printf("%s\n", inet_ntoa(srv_rhs.sin_addr));
 
-    buff[0] = 'S';
-    buff[1] = 'R';
-    buff[2] = 'V';
-    buff[3] = '\0';
-
-    sendto(sock, buff, 3, 0, (struct sockaddr *) &serverAddr, slen);
-    printf("%s\n", inet_ntoa(serverAddr.sin_addr));
-
+    // wait for 1 second so servers can respond
     sleep(1);
 
-    auto received = recvfrom(sock, buff, bufferSize, 0, (struct sockaddr *) &serverAddr, &slen);
+    // after one second, we pull the report
+    // if server is not ready for 1 second, we return false and go forward
+    auto received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &srv_rhs, &slen);
 
     if (-1 == received)
     {
@@ -93,24 +102,21 @@ bool Client::retrieveData()
         return false;
     }
 
-    //send(sock, buff, bufferSize, 0);
-    //recv(sock, buff, bufferSize, 0);
-
     report = std::__cxx11::string(buff);
 
     closeSocket();
     return true;
 }
 
+const std::__cxx11::string& Client::getReport() const
+{
+    return report;
+}
+
 void Client::closeSocket()
 {
     // TODO: check result, validate..
 
-    close(sock);
-    sock = -1; // set invalid data
-}
-
-std::__cxx11::string Client::getReport() const
-{
-    return report;
+    close(sock_fd);
+    sock_fd = -1; // set invalid data
 }
