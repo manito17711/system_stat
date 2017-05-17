@@ -8,7 +8,7 @@ class ProtocolTypeUDP : public ProtocolType
 public:
     ProtocolTypeUDP(int port);
 
-    virtual void run();
+    virtual void listen();
     virtual void initSocketDescriptor();
 };
 

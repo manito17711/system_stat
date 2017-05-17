@@ -2,7 +2,7 @@
 
 ProtocolTypeUDP::ProtocolTypeUDP(int port) : ProtocolType(port) {}
 
-void ProtocolTypeUDP::run()
+void ProtocolTypeUDP::listen()
 {
 
 }

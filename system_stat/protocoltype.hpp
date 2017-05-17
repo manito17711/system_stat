@@ -11,10 +11,10 @@
 class ProtocolType
 {
 public:
-    ProtocolType(int port);
+    ProtocolType(int port = 13651);
     virtual ~ProtocolType();
 
-    virtual void run() = 0;
+    virtual void listen() = 0;
     virtual void initSocketDescriptor() = 0;
 
     const int& getSockFd() const;

@@ -28,6 +28,7 @@ private:
     char message[BUFF_SIZE];
 
     void init();
+    void clear_buffer();
 };
 
 #endif // CLIENT_H

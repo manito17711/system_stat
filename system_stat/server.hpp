@@ -33,6 +33,7 @@ private:
     ConnType defineConnectionType(const char* req); // define request - server or client
 
     bool favicon(const char* req);
+    void clearBuff();
 
 public:
     explicit Server(std::size_t port);

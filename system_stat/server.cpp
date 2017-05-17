@@ -1,5 +1,5 @@
 #include "server.hpp"
-
+#include "errno.h"
 
 Server::Server(std::size_t port) : PORT(port)
 {
@@ -18,9 +18,12 @@ Server::~Server()
 
 void Server::sendData(int fd, const std::__cxx11::string& data)
 {
+    // tcp
     //send(fd, data.c_str(), strlen(data.c_str()), 0);
 
-    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &si_other, si_other_len);
+
+    // udp
+    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_other), si_other_len);
     std::cout << "data to send: " << data << std::endl;
 }
 
@@ -72,22 +75,27 @@ void Server::startListen(std::size_t maxConn)
     }
     */
 
+
+    // udp
     for (;;)
     {
-        ssize_t received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr*) &si_other, &si_other_len);
+        clearBuff();
+
+        const ssize_t received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr*) &si_other, &si_other_len);
         std::cout << buff << std::endl;
 
         if (received > 0)
         {
+            std::cout << "Incoming call: " << inet_ntoa(si_other.sin_addr) << " Type: ";
+
             ConnType type = defineConnectionType(buff);
+            (type == ConnType::client) ? std::cout << "client\n" : std::cout << "server\n";
 
-            if (!favicon(buff))
-            {
-                std::cout << "Incoming call: " << inet_ntoa(si_other.sin_addr) << " Type: ";
-                (type == ConnType::client) ? std::cout << "client\n" : std::cout << "server\n";
-
-                pFunc_onConn(sock_fd, type);
-            }
+            pFunc_onConn(sock_fd, type);
+        }
+        else
+        {
+            std::cout << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
         }
     }
 }
@@ -119,6 +127,11 @@ bool Server::favicon(const char* req)
     }
 
     return false;
+}
+
+void Server::clearBuff()
+{
+    memset(buff, 0, BUFF_SIZE);
 }
 
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
@@ -178,21 +191,24 @@ void Server::init()
     */
 
     // set socket to be reused
-    int enable = 1;
-    if (0 > setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
-    {
-        // TDOD: log error in set socket reuse..
-    }
+
 
 
     // udp
-    sock_fd = socket (AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    sock_fd = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (0 > sock_fd)
     {
         // TODO: log on error
         // std::cout << "ERROR: socket()" << std::endl;
 
         exit(1);
+    }
+
+    // set socket reusable
+    int enable = 1;
+    if (0 > setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
+    {
+        // TDOD: log error in set socket reuse..
     }
 
 

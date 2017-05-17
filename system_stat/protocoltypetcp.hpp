@@ -8,7 +8,7 @@ class ProtocolTypeTCP : public ProtocolType
 public:
     ProtocolTypeTCP(int port);
 
-    virtual void run();
+    virtual void listen();
     virtual void initSocketDescriptor();
 };
 
