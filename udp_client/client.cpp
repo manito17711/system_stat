@@ -10,6 +10,7 @@ void Client::init()
 {
     slen = sizeof(si_other);
 
+    // get file descriptor
     if (-1 == (sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)))
     {
         std::cerr << "Error: socket()" << std:: endl;
@@ -19,29 +20,25 @@ void Client::init()
     // set connection non-blocking
     fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
+    // clear memory
     memset((char *) &si_other, 0, sizeof(si_other));
     si_other.sin_family = AF_INET;
     si_other.sin_port = htons(PORT);
 
-    /*if (0 == inet_pton(si_other.sin_family, SERVER.c_str(), &(si_other.sin_addr)))
+
+    if (0 == inet_pton(si_other.sin_family, SERVER.c_str(), &si_other.sin_addr))
     {
         std::cerr << "Error: inet_pton()" << std:: endl;
         close(sock_fd);
         exit(1);
-    }*/
-
-
-    if (0 == inet_aton(SERVER.c_str(), &si_other.sin_addr))
-    {
-        std::cerr << "Error: inet_aton()" << std:: endl;
-        exit(1);
     }
+
 
     // three testing messages.. nothing special..
     for (int i = 0; i < 3; ++i)
     {
         printf("Enter message : ");
-        std::cin >> buff;
+        std::cin >> buff; // read message to first space
 
         //send the message
         const int buff_len = strlen (buff);
@@ -58,13 +55,13 @@ void Client::init()
             std::cerr << "Warning: --buff_len: " << buff_len << " --send_data: " << send_data << std:: endl;
         }
 
-        // clear the buffer by filling null, it might have previously received data
+        // clear the buffer
         clear_buffer();
 
         // sleep for two seconds..
         sleep(2);
 
-        // try to receive some data
+        // try to retrieve data
         if (-1 == recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &si_other, &slen))
         {
             strcpy(buff, "recvfrom() failed or server does not respond in 2 seconds!\n\0");

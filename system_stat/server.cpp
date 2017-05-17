@@ -23,7 +23,7 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
 
 
     // udp
-    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_other), si_other_len);
+    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
     std::cout << "data to send: " << data << std::endl;
 }
 
@@ -81,12 +81,13 @@ void Server::startListen(std::size_t maxConn)
     {
         clearBuff();
 
-        const ssize_t received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr*) &si_other, &si_other_len);
+        si_rhs_len = sizeof(si_rhs);
+        const ssize_t received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
         std::cout << buff << std::endl;
 
         if (received > 0)
         {
-            std::cout << "Incoming call: " << inet_ntoa(si_other.sin_addr) << " Type: ";
+            std::cout << "Incoming call: " << inet_ntoa(si_rhs.sin_addr) << " Type: ";
 
             ConnType type = defineConnectionType(buff);
             (type == ConnType::client) ? std::cout << "client\n" : std::cout << "server\n";
@@ -211,12 +212,12 @@ void Server::init()
         // TDOD: log error in set socket reuse..
     }
 
+    // init variable
+    si_lhs.sin_family = AF_INET;
+    si_lhs.sin_addr.s_addr = INADDR_ANY;
+    si_lhs.sin_port = htons(PORT);
 
-    si_in.sin_family = AF_INET;
-    si_in.sin_addr.s_addr = INADDR_ANY;
-    si_in.sin_port = htons(PORT);
-
-    if (0 > bind(sock_fd, (struct sockaddr*) &si_in, sizeof(si_in)))
+    if (0 > bind(sock_fd, (struct sockaddr*) &si_lhs, sizeof(si_lhs)))
     {
         // TODO: log on error
         // cout << strerror(errno) << endl;

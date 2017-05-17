@@ -21,19 +21,19 @@ const int &ProtocolType::getPort() const
     return port;
 }
 
-const int &ProtocolType::getSiLhsLength() const
+const socklen_t& ProtocolType::getSiLhsLength() const
 {
     return slen;
 }
 
 const sockaddr_in& ProtocolType::getSiLhs() const
 {
-    return si_me;
+    return si_lhs;
 }
 
 const sockaddr_in& ProtocolType::getSiRhs() const
 {
-    return si_other;
+    return si_rhs;
 }
 
 
