@@ -14,10 +14,15 @@
 #include <fcntl.h>
 
 #include "node.hpp"
+#include "protocoltype.hpp"
+#include "protocoltypetcp.hpp"
+#include "protocoltypeudp.hpp"
 
 class Client
 {
 private:
+    ProtocolType* protocol;
+
     static const size_t BUFF_SIZE = 1024;
 
     char buff[BUFF_SIZE];
@@ -27,11 +32,11 @@ private:
     struct hostent *hp;
     std::__cxx11::string report;
 
-    void initSocket();
+    void init();
     void closeSocket();
 
 public:
-	explicit Client();
+    explicit Client();
 
     void setServer(const Node&);
     bool retrieveData();

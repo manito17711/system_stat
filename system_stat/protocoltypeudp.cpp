@@ -8,7 +8,7 @@ void ProtocolTypeUDP::listen()
     {
         clearBuff();
 
-        si_rhs_len = sizeof(si_rhs);
+        si_rhs_len = sizeof(si_rhs);        
         const ssize_t received = recvfrom(sock_fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
 
         if (received > 0)
@@ -20,6 +20,7 @@ void ProtocolTypeUDP::listen()
         {
             // TODO: log error
             // std::cerr << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
+            exit(1);
         }
     }
 }
@@ -54,14 +55,23 @@ void ProtocolTypeUDP::init()
 
 int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data)
 {
-    int send_data = sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
+    int send_data = sendto(fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
 
     return send_data;
+}
+
+int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data, sockaddr_in server)
+{
+    si_rhs = server;
+    si_rhs_len = sizeof (si_rhs);
+
+    sendData(fd, data);
 }
 
 int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
 {
     clearBuff();
+
     const ssize_t received = recvfrom(sock_fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
 
     if (-1 == received)

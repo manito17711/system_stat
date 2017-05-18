@@ -13,7 +13,7 @@ class Dispatcher
 {
 private:
 	Server *server;
-    Client *client; // possible unused parameter...
+    Client *client;
     Reporter *reporter;
     Network *network;
 
@@ -21,6 +21,7 @@ private:
 
 public:
     explicit Dispatcher(Server *srv, Client *cln, Reporter *rpt, Network *network);
+    //explicit Dispatcher(Server *srv, Reporter *rpt, Network *network);
 	
     void run();
 };

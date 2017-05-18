@@ -41,12 +41,6 @@ void ProtocolType::setOnConn(const std::function<void (int, ConnType)> &func)
     pFunc_onConn = func;
 }
 
-void ProtocolType::setBufferSize(size_t buff_size)
-{
-    this->buff_size = buff_size;
-}
-
-
 int ProtocolType::closeSocketFd()
 {
     int result = close(sock_fd);

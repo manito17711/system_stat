@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
         port = std::atoi(argv[1]);
     }
 
-    std::shared_ptr<ProtocolType> protocol (new ProtocolTypeUDP(port));
+    std::shared_ptr<ProtocolType> protocol_srv (new ProtocolTypeUDP(port));
 
-    Server srv (protocol.get());
+    Server srv (protocol_srv.get());
     Client cln;
     Reporter rpt;
     Network ntw;

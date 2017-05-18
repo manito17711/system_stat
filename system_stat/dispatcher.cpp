@@ -89,11 +89,9 @@ void Dispatcher::onConnection(int fd, ConnType type)
 
         for (std::size_t i = 0; i < futuresReports.size(); ++i)
         {
-            reporter->append("<br>");
-            reporter->append("-------------------------------------------");
-            reporter->append("<br>");
+            reporter->append("\n");
             reporter->append(network->getServer(i).ipAddr);
-            reporter->append("<br>");
+            reporter->append(":  ");
 
             if (futuresReports[i].get())
             {

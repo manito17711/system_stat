@@ -3,11 +3,12 @@
 
 Client::Client()
 {
+
 }
+
 
 void Client::setServer(const Node& node)
 {
-
     hp = gethostbyname(node.ipAddr.c_str());
     if (0 == hp)
     {
@@ -25,7 +26,7 @@ void Client::setServer(const Node& node)
     slen = sizeof(srv_rhs);
 }
 
-void Client::initSocket()
+void Client::init()
 {
     // tcp
     /*
@@ -39,6 +40,7 @@ void Client::initSocket()
         exit(1);
     }
     */
+
 
     // udp
     sock_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -54,11 +56,13 @@ void Client::initSocket()
 
         exit(1);
     }
+
+    //protocol->init();
 }
 
 bool Client::retrieveData()
 {
-    initSocket();
+    init();
 
     // send "SRV" to server - that is how we say to the server the request is not
     buff[0] = 'S';
@@ -104,6 +108,7 @@ bool Client::retrieveData()
 
     report = std::__cxx11::string(buff);
 
+    //protocol->closeSocketFd();
     closeSocket();
     return true;
 }

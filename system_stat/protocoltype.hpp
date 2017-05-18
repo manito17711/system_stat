@@ -19,6 +19,7 @@ public:
     virtual void init() = 0;
     virtual void listen() = 0;
     virtual int sendData(int fd, const std::__cxx11::string& data) = 0;
+    virtual int sendData(int fd, const std::__cxx11::string& data, sockaddr_in server) = 0;
     virtual int readData(int fd, std::__cxx11::string& str) = 0;
 
     const int& getSockFd() const;
@@ -28,7 +29,6 @@ public:
     const struct sockaddr_in& getSiRhs() const;
 
     void setOnConn(std::function<void(int fd, ConnType type)> const &func);
-    void setBufferSize(size_t buff_size = 1024);
 
     int closeSocketFd();
 
@@ -38,11 +38,12 @@ protected:
     struct sockaddr_in si_lhs;
     struct sockaddr_in si_rhs;
     socklen_t si_rhs_len;
-    char* buff;
-    size_t buff_size;
-    std::function<void(int, ConnType)> pFunc_onConn; // TODO: this definition should be in separate file
 
-    ConnType defineConnectionType(const char* req); // define request - server or client
+    static const size_t buff_size = 1024;
+    char buff[buff_size];
+    std::function<void(int, ConnType)> pFunc_onConn; // TODO: this definition should be in separate file.. copied from server.hpp
+
+    ConnType defineConnectionType(const char* req); // define request - server or client.
 
     void clearBuff();
 };
