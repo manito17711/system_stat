@@ -41,7 +41,7 @@ void Client::initSocket()
     */
 
     // udp
-    sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    sock_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     // set connection non-blocking
     fcntl(sock_fd, F_SETFL, O_NONBLOCK);

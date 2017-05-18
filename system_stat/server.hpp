@@ -13,33 +13,33 @@
 #include <iostream>
 
 #include "connection_types.hpp"
+#include "protocoltype.hpp"
 
 const int BUFF_SIZE = 1024;
 
 class Server
 {
 private:
-    const std::size_t PORT;
     std::function<void(int fd, ConnType type)> pFunc_onConn;
 
-    struct sockaddr_in si_lhs;
-    struct sockaddr_in si_rhs;
-    socklen_t si_rhs_len;
-    int sock_fd;
+    ProtocolType* protocol;
+    //struct sockaddr_in si_lhs;
+    //struct sockaddr_in si_rhs;
+    //socklen_t si_rhs_len;
+    //int sock_fd;
 
-    char buff[BUFF_SIZE];
+    //char buff[BUFF_SIZE];
 
     void init();
     ConnType defineConnectionType(const char* req); // define request - server or client
 
     bool favicon(const char* req); // this should not be here!!!
-    void clearBuff();
 
 public:
-    explicit Server(std::size_t port);
+    explicit Server(ProtocolType* protocol);
     ~Server();
 
-    int closeSocketDescr(int &fd); // TODO: try to remove?
+    //int closeSocketDescr(int &fd); // TODO: try to remove?
     int closeServerSocketDescr();
 
     void startListen(std::size_t maxConn = 5); // max conn = 5 - only for TCP connection..

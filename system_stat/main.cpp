@@ -5,6 +5,12 @@
 #include "dispatcher.hpp"
 #include "network.hpp"
 
+#include "protocoltype.hpp"
+#include "protocoltypetcp.hpp"
+#include "protocoltypeudp.hpp"
+
+#include <memory>
+
 const std::size_t DEFAULT_PORT = 13651;
 
 int main(int argc, char *argv[])
@@ -15,7 +21,9 @@ int main(int argc, char *argv[])
         port = std::atoi(argv[1]);
     }
 
-    Server srv (port);
+    std::shared_ptr<ProtocolType> protocol (new ProtocolTypeUDP(port));
+
+    Server srv (protocol.get());
     Client cln;
     Reporter rpt;
     Network ntw;

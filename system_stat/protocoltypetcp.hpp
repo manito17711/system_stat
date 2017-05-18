@@ -9,7 +9,7 @@ public:
     ProtocolTypeTCP(int port);
 
     virtual void listen();
-    virtual void initSocketDescriptor();
+    virtual void init();
 };
 
 #endif // PROTOCOLTYPETCP_H

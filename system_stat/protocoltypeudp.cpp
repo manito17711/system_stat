@@ -4,18 +4,35 @@ ProtocolTypeUDP::ProtocolTypeUDP(int port) : ProtocolType(port) {}
 
 void ProtocolTypeUDP::listen()
 {
+    for (;;)
+    {
+        clearBuff();
 
+        si_rhs_len = sizeof(si_rhs);
+        const ssize_t received = recvfrom(sock_fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
+
+        if (received > 0)
+        {
+            ConnType type = defineConnectionType(buff);
+            pFunc_onConn(sock_fd, type);
+        }
+        else
+        {
+            // TODO: log error
+            // std::cerr << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
+        }
+    }
 }
 
-void ProtocolTypeUDP::initSocketDescriptor()
+void ProtocolTypeUDP::init()
 {
-    slen = sizeof(si_rhs);
+    si_rhs_len = sizeof (si_rhs);
 
     // create a UDP socket
-    if (0 > (sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)))
+    if (0 > (sock_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)))
     {
-        // log error
-        //exit(1);
+        // TODO: log error
+        exit(1);
     }
 
 
@@ -30,8 +47,32 @@ void ProtocolTypeUDP::initSocketDescriptor()
     // bind socket
     if (0 > (bind(sock_fd, (struct sockaddr*) &si_lhs, sizeof(si_lhs))))
     {
-        // log error
-        //exit(1);
+        // TODO: log error
+        exit(1);
     }
+}
+
+int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data)
+{
+    int send_data = sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
+
+    return send_data;
+}
+
+int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
+{
+    clearBuff();
+    const ssize_t received = recvfrom(sock_fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
+
+    if (-1 == received)
+    {
+        str = strerror(errno);
+    }
+    else
+    {
+        str = buff;
+    }
+
+    return received;
 }
 

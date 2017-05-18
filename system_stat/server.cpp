@@ -1,18 +1,16 @@
 #include "server.hpp"
 #include "errno.h"
 
-Server::Server(std::size_t port) : PORT(port)
+Server::Server(ProtocolType* protocol) : protocol(protocol)
 {
     init();
 }
 
 Server::~Server()
 {
-    // TDOO: check if return -1 and log...
-
-    if (-1 != sock_fd)
+    if (protocol->getSockFd() != -1)
     {
-        closeServerSocketDescr();
+        protocol->closeSocketFd();
     }
 }
 
@@ -23,8 +21,11 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
 
 
     // udp
+    /*
     sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
-    std::cout << "data to send: " << data << std::endl;
+    std::cout << "data to send: " << data << std::endl;*/
+
+    protocol->sendData(fd, data);
 }
 
 void Server::startListen(std::size_t maxConn)
@@ -77,6 +78,7 @@ void Server::startListen(std::size_t maxConn)
 
 
     // udp
+    /*
     for (;;)
     {
         clearBuff();
@@ -98,9 +100,13 @@ void Server::startListen(std::size_t maxConn)
         {
             std::cout << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
         }
-    }
+    }*/
+
+    protocol->listen();
 }
 
+
+// should go in TCP abstract file
 ConnType Server::defineConnectionType(const char* req)
 {
     int l = strlen(req);
@@ -117,6 +123,8 @@ ConnType Server::defineConnectionType(const char* req)
     return t;
 }
 
+
+// should go in TCP file
 bool Server::favicon(const char* req)
 {
     std::__cxx11::string r = std::__cxx11::string(req).substr(0, 12);
@@ -130,28 +138,25 @@ bool Server::favicon(const char* req)
     return false;
 }
 
-void Server::clearBuff()
-{
-    memset(buff, 0, BUFF_SIZE);
-}
-
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
-    pFunc_onConn = func;
+    protocol->setOnConn(func);
+    //pFunc_onConn = func;
 }
 
 int Server::closeServerSocketDescr()
 {
-    return closeSocketDescr(sock_fd);
+    return protocol->closeSocketFd();
+    //return closeSocketDescr(sock_fd);
 }
 
-int Server::closeSocketDescr(int &fd)
+/*int Server::closeSocketDescr(int &fd)
 {
     int r = close(fd);
     fd = -1; // set invalid data on file descriptor
 
     return r;
-}
+}*/
 
 void Server::init()
 {
@@ -194,7 +199,7 @@ void Server::init()
     // set socket to be reused
 
 
-
+    /*
     // udp
     sock_fd = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (0 > sock_fd)
@@ -229,6 +234,9 @@ void Server::init()
 
         exit(1);
     }
+    */
+
+    protocol->init();
 
     std::cout << "Server initialized" << std::endl;
 }

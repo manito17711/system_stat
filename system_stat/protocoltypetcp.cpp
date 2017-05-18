@@ -12,7 +12,7 @@ void ProtocolTypeTCP::listen()
 }
 
 
-void ProtocolTypeTCP::initSocketDescriptor()
+void ProtocolTypeTCP::init()
 {
 
 }

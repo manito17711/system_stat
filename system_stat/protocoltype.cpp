@@ -23,7 +23,7 @@ const int &ProtocolType::getPort() const
 
 const socklen_t& ProtocolType::getSiLhsLength() const
 {
-    return slen;
+    return si_rhs_len;
 }
 
 const sockaddr_in& ProtocolType::getSiLhs() const
@@ -36,6 +36,16 @@ const sockaddr_in& ProtocolType::getSiRhs() const
     return si_rhs;
 }
 
+void ProtocolType::setOnConn(const std::function<void (int, ConnType)> &func)
+{
+    pFunc_onConn = func;
+}
+
+void ProtocolType::setBufferSize(size_t buff_size)
+{
+    this->buff_size = buff_size;
+}
+
 
 int ProtocolType::closeSocketFd()
 {
@@ -43,5 +53,26 @@ int ProtocolType::closeSocketFd()
     sock_fd = -1; // set invalid data on file descriptor
 
     return result;
+}
+
+ConnType ProtocolType::defineConnectionType(const char* req)
+{
+    int l = strlen(req);
+    if (3 > l)
+    {
+        // TODO: log error
+        exit(1);
+    }
+
+    std::__cxx11::string firstThree = std::__cxx11::string(req).substr(0, 3);
+
+    ConnType t = firstThree.compare("SRV") ? ConnType::client : ConnType::server;
+
+    return t;
+}
+
+void ProtocolType::clearBuff()
+{
+    memset(buff, 0, buff_size);
 }
 

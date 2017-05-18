@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <string.h>
 
+#include <functional>
+#include <connection_types.hpp>
 
 class ProtocolType
 {
@@ -16,6 +18,8 @@ public:
 
     virtual void init() = 0;
     virtual void listen() = 0;
+    virtual int sendData(int fd, const std::__cxx11::string& data) = 0;
+    virtual int readData(int fd, std::__cxx11::string& str) = 0;
 
     const int& getSockFd() const;
     const int& getPort() const;
@@ -23,15 +27,22 @@ public:
     const struct sockaddr_in& getSiLhs() const;
     const struct sockaddr_in& getSiRhs() const;
 
+    void setOnConn(std::function<void(int fd, ConnType type)> const &func);
+    void setBufferSize(size_t buff_size = 1024);
+
     int closeSocketFd();
 
 protected:
     int sock_fd;
     int port;
-    struct sockaddr_in si_lhs; // TODO: unused parameter ?!
+    struct sockaddr_in si_lhs;
     struct sockaddr_in si_rhs;
-    socklen_t slen;
+    socklen_t si_rhs_len;
+    char* buff;
+    size_t buff_size;
+    std::function<void(int, ConnType)> pFunc_onConn; // TODO: this definition should be in separate file
+
+    ConnType defineConnectionType(const char* req); // define request - server or client
 
     void clearBuff();
-    virtual void initSocketDescriptor() = 0;
 };
