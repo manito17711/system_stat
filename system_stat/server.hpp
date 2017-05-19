@@ -22,7 +22,7 @@ class Server
 private:
     std::function<void(int fd, ConnType type)> pFunc_onConn;
 
-    ProtocolType* protocol;
+    std::shared_ptr<ProtocolType> protocol;
     //struct sockaddr_in si_lhs;
     //struct sockaddr_in si_rhs;
     //socklen_t si_rhs_len;

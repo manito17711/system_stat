@@ -1,8 +1,5 @@
 #include "dispatcher.hpp"
 
-#define ASYNC_MODE
-//#define SYNC_MODE
-//#define PRINT_TIME
 #define LOAD_TEST_SERVERS
 
 Dispatcher::Dispatcher(Server *srv, Client *cln, Reporter *rpt, Network *ntw)
@@ -69,10 +66,21 @@ void Dispatcher::onConnection(int fd, ConnType type)
     {
     case ConnType::client:
     {
+        client->collectAllReports();
+        reporter->append(client->getReport());
+
         // we check all servers at the network and get their statistics
 
+/*
         std::deque<std::unique_ptr<Client>> clients;
         std::deque<std::future<bool>> futuresReports;
+
+        std::deque<void*> clients_vp;
+        auto newClient = client->createObject();
+
+        clients_vp.push_back(newClient);
+
+        newClient->setServer(network->getServer(2));
 
 #ifdef ASYNC_MODE
 #ifdef PRINT_TIME
@@ -140,6 +148,9 @@ void Dispatcher::onConnection(int fd, ConnType type)
 #endif
 #endif
         reporter->setHTMLHeaders();
+*/
+
+
         break;
     }
     case ConnType::server:

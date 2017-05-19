@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <memory>
 
 #include <functional>
 #include <connection_types.hpp>
@@ -19,8 +20,10 @@ public:
     virtual void init() = 0;
     virtual void listen() = 0;
     virtual int sendData(int fd, const std::__cxx11::string& data) = 0;
-    virtual int sendData(int fd, const std::__cxx11::string& data, sockaddr_in server) = 0;
+    virtual int sendData(int fd, const std::__cxx11::string &data, sockaddr_in server) = 0;
     virtual int readData(int fd, std::__cxx11::string& str) = 0;
+    virtual std::shared_ptr<ProtocolType> createObject() = 0;
+
 
     const int& getSockFd() const;
     const int& getPort() const;
@@ -28,8 +31,8 @@ public:
     const struct sockaddr_in& getSiLhs() const;
     const struct sockaddr_in& getSiRhs() const;
 
-    void setOnConn(std::function<void(int fd, ConnType type)> const &func);
 
+    void setOnConn(std::function<void(int fd, ConnType type)> const &func);
     int closeSocketFd();
 
 protected:

@@ -12,16 +12,22 @@
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <memory>
+#include <deque>
+#include <future>
 
 #include "node.hpp"
 #include "protocoltype.hpp"
 #include "protocoltypetcp.hpp"
 #include "protocoltypeudp.hpp"
+#include "network.hpp"
+
 
 class Client
 {
 private:
-    ProtocolType* protocol;
+    std::shared_ptr<ProtocolType> protocol;
+    Network& network;
 
     static const size_t BUFF_SIZE = 1024;
 
@@ -36,9 +42,13 @@ private:
     void closeSocket();
 
 public:
-    explicit Client();
+    explicit Client(std::shared_ptr<ProtocolType> protocol, Network& network);
 
     void setServer(const Node&);
     bool retrieveData();
     const std::__cxx11::string& getReport() const;
+
+    void collectAllReports();
+
+    std::shared_ptr<Client> createObject();
 };

@@ -1,10 +1,12 @@
 #include "client.hpp"
+#include <iostream>
 
 
-Client::Client()
+Client::Client(std::shared_ptr<ProtocolType> protocol, Network& network) : protocol(protocol), network(network)
 {
 
 }
+
 
 
 void Client::setServer(const Node& node)
@@ -25,6 +27,8 @@ void Client::setServer(const Node& node)
 
     slen = sizeof(srv_rhs);
 }
+
+
 
 void Client::init()
 {
@@ -59,6 +63,8 @@ void Client::init()
 
     //protocol->init();
 }
+
+
 
 bool Client::retrieveData()
 {
@@ -113,10 +119,59 @@ bool Client::retrieveData()
     return true;
 }
 
+
+
 const std::__cxx11::string& Client::getReport() const
 {
     return report;
 }
+
+
+
+void Client::collectAllReports()
+{
+    // we check all servers at the network and get their statistics
+
+    std::deque<std::shared_ptr<Client>> clients;
+    std::deque<std::future<bool>> futuresReports;
+
+
+    for (std::size_t i = 0; i < network.serversCount(); ++i)
+    {
+        std::shared_ptr<Client> newClient (this->createObject());
+        newClient->setServer(network.getServer(i));
+
+        futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, newClient.get()));
+        clients.push_back(newClient);
+    }
+
+    for (std::size_t i = 0; i < futuresReports.size(); ++i)
+    {
+        report += "\n";
+        report += network.getServer(i).ipAddr;
+        report += ":  ";
+
+        if (futuresReports[i].get())
+        {
+            report += clients[i]->getReport();
+        }
+        else
+        {
+            report += "Error: No connection with server.";
+        }
+    }
+}
+
+
+
+std::shared_ptr<Client> Client::createObject()
+{
+    std::shared_ptr<Client> newObj (new Client(protocol->createObject(), network));
+
+    return newObj;
+}
+
+
 
 void Client::closeSocket()
 {

@@ -86,3 +86,9 @@ int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
     return received;
 }
 
+std::shared_ptr<ProtocolType> ProtocolTypeUDP::createObject()
+{
+    std::shared_ptr<ProtocolType> newObj (new ProtocolTypeUDP(port));
+    return newObj;
+}
+

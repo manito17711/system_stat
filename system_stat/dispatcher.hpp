@@ -21,7 +21,6 @@ private:
 
 public:
     explicit Dispatcher(Server *srv, Client *cln, Reporter *rpt, Network *network);
-    //explicit Dispatcher(Server *srv, Reporter *rpt, Network *network);
 	
     void run();
 };
