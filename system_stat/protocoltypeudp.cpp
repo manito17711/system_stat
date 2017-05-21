@@ -27,7 +27,7 @@ void ProtocolTypeUDP::listen()
     }
 }
 
-void ProtocolTypeUDP::init()
+void ProtocolTypeUDP::initSocket()
 {
     // create a UDP socket
     if (0 > (sock_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)))

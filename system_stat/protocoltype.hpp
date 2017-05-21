@@ -19,7 +19,7 @@ public:
     ProtocolType(int port);
     virtual ~ProtocolType();
 
-    virtual void init() = 0;
+    virtual void initSocket() = 0;
     virtual void listen() = 0;
     virtual int sendData(int fd, const std::__cxx11::string& data) = 0;
     virtual int sendData(int fd, const std::__cxx11::string &data, sockaddr_in server) = 0;

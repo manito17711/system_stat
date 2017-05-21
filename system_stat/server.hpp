@@ -15,23 +15,13 @@
 #include "connection_types.hpp"
 #include "protocoltype.hpp"
 
-const int BUFF_SIZE = 1024;
-
 class Server
 {
 private:
     std::function<void(int fd, ConnType type)> pFunc_onConn;
-
-    std::shared_ptr<ProtocolType> protocol;
-    //struct sockaddr_in si_lhs;
-    //struct sockaddr_in si_rhs;
-    //socklen_t si_rhs_len;
-    //int sock_fd;
-
-    //char buff[BUFF_SIZE];
+    std::shared_ptr<ProtocolType> protocol;   
 
     void init();
-    ConnType defineConnectionType(const char* req); // define request - server or client
 
     bool favicon(const char* req); // this should not be here!!!
 

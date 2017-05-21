@@ -6,6 +6,8 @@ Server::Server(std::shared_ptr<ProtocolType> protocol) : protocol(protocol)
     init();
 }
 
+
+
 Server::~Server()
 {
     if (protocol->getSockFd() != -1)
@@ -13,6 +15,8 @@ Server::~Server()
         protocol->closeSocketFd();
     }
 }
+
+
 
 void Server::sendData(int fd, const std::__cxx11::string& data)
 {
@@ -27,6 +31,8 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
 
     protocol->sendData(fd, data);
 }
+
+
 
 void Server::startListen(std::size_t maxConn)
 {
@@ -106,24 +112,6 @@ void Server::startListen(std::size_t maxConn)
 }
 
 
-// should go in TCP abstract file
-ConnType Server::defineConnectionType(const char* req)
-{
-    int l = strlen(req);
-    if (3 > l)
-    {
-        // TODO: log error
-        exit(1);
-    }
-
-    std::__cxx11::string firstThree = std::__cxx11::string(req).substr(0, 3);
-
-    ConnType t = firstThree.compare("SRV") ? ConnType::client : ConnType::server;
-
-    return t;
-}
-
-
 // should go in TCP file
 bool Server::favicon(const char* req)
 {
@@ -138,25 +126,22 @@ bool Server::favicon(const char* req)
     return false;
 }
 
+
+
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
     protocol->setOnConnection(func);
     //pFunc_onConn = func;
 }
 
+
+
 int Server::closeServerSocketDescr()
 {
     return protocol->closeSocketFd();
-    //return closeSocketDescr(sock_fd);
 }
 
-/*int Server::closeSocketDescr(int &fd)
-{
-    int r = close(fd);
-    fd = -1; // set invalid data on file descriptor
 
-    return r;
-}*/
 
 void Server::init()
 {
@@ -236,7 +221,7 @@ void Server::init()
     }
     */
 
-    protocol->init();
+    protocol->initSocket();
     protocol->bindSocket();
 
     std::cout << "Server initialized" << std::endl;

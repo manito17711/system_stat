@@ -54,7 +54,8 @@ void Client::init()
 
 bool Client::retrieveData()
 {
-    protocol->init();
+    protocol->initSocket();
+    protocol->setConnectionNonBlocking();
 
     // send "SRV" to server - that is how we say to the server the request is not
     /*buff[0] = 'S';
@@ -85,12 +86,10 @@ bool Client::retrieveData()
 
     protocol->sendData(protocol->getSockFd(), data);
 
-
-    printf("%s\n", inet_ntoa(protocol->getSiRhs().sin_addr));
+    // printf("%s\n", inet_ntoa(protocol->getSiRhs().sin_addr));
 
     sleep(1);
 
-    protocol->setConnectionNonBlocking();
     auto received = protocol->readData(protocol->getSockFd(), data);
 
     if (-1 == received)
