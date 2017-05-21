@@ -66,96 +66,18 @@ void Dispatcher::onConnection(int fd, ConnType type)
     {
     case ConnType::client:
     {
+        reporter->append(reporter->getSysInfo());
+        reporter->append(reporter->getProcLoadAvg());
+
         client->collectAllReports();
         reporter->append(client->getReport());
-
-        // we check all servers at the network and get their statistics
-
-/*
-        std::deque<std::unique_ptr<Client>> clients;
-        std::deque<std::future<bool>> futuresReports;
-
-        std::deque<void*> clients_vp;
-        auto newClient = client->createObject();
-
-        clients_vp.push_back(newClient);
-
-        newClient->setServer(network->getServer(2));
-
-#ifdef ASYNC_MODE
-#ifdef PRINT_TIME
-        auto start = std::chrono::system_clock::now();
-#endif
-        for (std::size_t i = 0; i < network->serversCount(); ++i)
-        {
-            std::unique_ptr<Client> cl (new Client());
-            cl->setServer(network->getServer(i));
-
-            futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, cl.get()));
-            clients.push_back(std::move(cl));
-        }
-
-        for (std::size_t i = 0; i < futuresReports.size(); ++i)
-        {
-            reporter->append("\n");
-            reporter->append(network->getServer(i).ipAddr);
-            reporter->append(":  ");
-
-            if (futuresReports[i].get())
-            {
-                reporter->append(clients[i]->getReport());
-            }
-            else
-            {
-                reporter->append("Error: No connection with server.");
-            }
-        }
-#ifdef PRINT_TIME
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = end - start;
-        std::cout << elapsed.count() << std::endl;
-#endif
-#endif
-
-#ifdef SYNC_MODE
-#ifdef PRINT_TIME
-        start = std::chrono::system_clock::now();
-#endif
-        for (std::size_t i = 0; i < network->serversCount(); ++i)
-        {
-            Node n = network->getServer(i);
-            client->setServer(n);
-
-            reporter->append("<br>");
-            reporter->append("-------------------------------------------");
-            reporter->append("<br>");
-            reporter->append(n.ipAddr);
-            reporter->append("<br>");
-
-            if (client->retrieveData())
-            {
-                reporter->append(client->getReport());
-            }
-            else
-            {
-                reporter->append("Error: No connection with server.");
-            }            
-        }
-#ifdef PRINT_TIME
-        end = std::chrono::system_clock::now();
-        elapsed = end - start;
-        std::cout << elapsed.count() << std::endl;
-#endif
-#endif
-        reporter->setHTMLHeaders();
-*/
-
 
         break;
     }
     case ConnType::server:
 
-        // no actions nedded
+        reporter->append(reporter->getSysInfo());
+        reporter->append(reporter->getProcLoadAvg());
 
         break;
     }

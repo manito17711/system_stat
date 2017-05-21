@@ -11,13 +11,12 @@ void Reporter::initReport(const ConnType& type)
 
     if (ConnType::client == type)
     {
-        report = "Localhost:";
-        this->append("<br>");
+        report = "Localhost:\n";
     }
-
-    this->append(getSysInfo());
-    this->append("<br>");
-    this->append(getProcLoadAvg());
+    else
+    {
+        report = "Server:\n";
+    }
 }
 
 void Reporter::setHTMLHeaders()
@@ -62,6 +61,7 @@ std::__cxx11::string Reporter::getSysInfo()
         str = "Error: sysinfo(&sysInfo)";
     }
 
+    str += "\n";
     return str;
 }
 
@@ -90,6 +90,7 @@ std::__cxx11::string Reporter::getProcLoadAvg()
         str = "Error: cannot open file " + procLoadavg;
     }
 
+    str += "\n";
     return str;
 }
 

@@ -22,7 +22,7 @@ public:
 
     // TODO: add option to remove server from network
 
-    Node& getServer(std::size_t idx);
+    const Node& getServer(std::size_t idx) const;
     std::size_t serversCount() const;
 };
 

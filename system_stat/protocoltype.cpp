@@ -11,7 +11,7 @@ ProtocolType::~ProtocolType()
     }
 }
 
-const int &ProtocolType::getSockFd() const
+int &ProtocolType::getSockFd()
 {
     return sock_fd;
 }
@@ -21,22 +21,55 @@ const int &ProtocolType::getPort() const
     return port;
 }
 
-const socklen_t& ProtocolType::getSiLhsLength() const
-{
-    return si_rhs_len;
-}
-
-const sockaddr_in& ProtocolType::getSiLhs() const
+sockaddr_in& ProtocolType::getSiLhs()
 {
     return si_lhs;
 }
 
-const sockaddr_in& ProtocolType::getSiRhs() const
+socklen_t &ProtocolType::getSiRhsLength()
+{
+    return si_rhs_len;
+}
+
+sockaddr_in& ProtocolType::getSiRhs()
 {
     return si_rhs;
 }
 
-void ProtocolType::setOnConn(const std::function<void (int, ConnType)> &func)
+void ProtocolType::bindSocket()
+{
+    if (0 > (bind(sock_fd, (struct sockaddr*) &si_lhs, sizeof(si_lhs))))
+    {
+        // TODO: log error
+        exit(1);
+    }
+}
+
+void ProtocolType::setSiRhs(std::__cxx11::string ipAddr, int port)
+{
+    hp = gethostbyname(ipAddr.c_str());
+    if (0 == hp)
+    {
+        // TODO: log error
+        // std::cout << "ERROR: get server by name";
+
+        exit(1);
+    }
+
+    memcpy(&si_rhs.sin_addr, hp->h_addr, hp->h_length);
+    si_rhs.sin_family = AF_INET;
+    si_rhs.sin_port = htons(port);
+
+    si_rhs_len = sizeof(si_rhs);
+}
+
+void ProtocolType::setConnectionNonBlocking()
+{
+    // set connection non-blocking
+    fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+}
+
+void ProtocolType::setOnConnection(const std::function<void (int, ConnType)> &func)
 {
     pFunc_onConn = func;
 }

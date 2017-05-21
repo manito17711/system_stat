@@ -1,8 +1,7 @@
 #include "client.hpp"
-#include <iostream>
 
 
-Client::Client(std::shared_ptr<ProtocolType> protocol, Network& network) : protocol(protocol), network(network)
+Client::Client(std::shared_ptr<ProtocolType> protocol, const Network* network) : protocol(protocol), network(network)
 {
 
 }
@@ -11,21 +10,7 @@ Client::Client(std::shared_ptr<ProtocolType> protocol, Network& network) : proto
 
 void Client::setServer(const Node& node)
 {
-    hp = gethostbyname(node.ipAddr.c_str());
-    if (0 == hp)
-    {
-        // TODO: log error
-        //std::cout << "ERROR: get server by name";
-
-        close(sock_fd);
-        exit(1);
-    }
-
-    memcpy(&srv_rhs.sin_addr, hp->h_addr, hp->h_length);
-    srv_rhs.sin_family = AF_INET;
-    srv_rhs.sin_port = htons(node.port);
-
-    slen = sizeof(srv_rhs);
+    protocol->setSiRhs(node.ipAddr, node.port);
 }
 
 
@@ -47,6 +32,7 @@ void Client::init()
 
 
     // udp
+    /*
     sock_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     // set connection non-blocking
@@ -59,7 +45,7 @@ void Client::init()
         // std::cout << strerror(errno) << std::endl;
 
         exit(1);
-    }
+    }*/
 
     //protocol->init();
 }
@@ -68,13 +54,13 @@ void Client::init()
 
 bool Client::retrieveData()
 {
-    init();
+    protocol->init();
 
     // send "SRV" to server - that is how we say to the server the request is not
-    buff[0] = 'S';
+    /*buff[0] = 'S';
     buff[1] = 'R';
     buff[2] = 'V';
-    buff[3] = '\0';
+    buff[3] = '\0';*/
 
 
     // tcp
@@ -95,27 +81,25 @@ bool Client::retrieveData()
 
 
     // udp
+    std::__cxx11::string data = "SRV";
 
-    sendto(sock_fd, buff, 3, 0, (struct sockaddr *) &srv_rhs, slen);
-    printf("%s\n", inet_ntoa(srv_rhs.sin_addr));
+    protocol->sendData(protocol->getSockFd(), data);
 
-    // wait for 1 second so servers can respond
+
+    printf("%s\n", inet_ntoa(protocol->getSiRhs().sin_addr));
+
     sleep(1);
 
-    // after one second, we pull the report
-    // if server is not ready for 1 second, we return false and go forward
-    auto received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &srv_rhs, &slen);
+    protocol->setConnectionNonBlocking();
+    auto received = protocol->readData(protocol->getSockFd(), data);
 
     if (-1 == received)
     {
-        closeSocket();
+        report = "";
         return false;
     }
 
-    report = std::__cxx11::string(buff);
-
-    //protocol->closeSocketFd();
-    closeSocket();
+    report = data;
     return true;
 }
 
@@ -132,14 +116,16 @@ void Client::collectAllReports()
 {
     // we check all servers at the network and get their statistics
 
+    report = "";
+
     std::deque<std::shared_ptr<Client>> clients;
     std::deque<std::future<bool>> futuresReports;
 
 
-    for (std::size_t i = 0; i < network.serversCount(); ++i)
+    for (std::size_t i = 0; i < network->serversCount(); ++i)
     {
         std::shared_ptr<Client> newClient (this->createObject());
-        newClient->setServer(network.getServer(i));
+        newClient->setServer(network->getServer(i));
 
         futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, newClient.get()));
         clients.push_back(newClient);
@@ -148,7 +134,7 @@ void Client::collectAllReports()
     for (std::size_t i = 0; i < futuresReports.size(); ++i)
     {
         report += "\n";
-        report += network.getServer(i).ipAddr;
+        report += network->getServer(i).ipAddr;
         report += ":  ";
 
         if (futuresReports[i].get())
@@ -169,14 +155,4 @@ std::shared_ptr<Client> Client::createObject()
     std::shared_ptr<Client> newObj (new Client(protocol->createObject(), network));
 
     return newObj;
-}
-
-
-
-void Client::closeSocket()
-{
-    // TODO: check result, validate..
-
-    close(sock_fd);
-    sock_fd = -1; // set invalid data
 }

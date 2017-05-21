@@ -29,10 +29,10 @@ int main(int argc, char *argv[])
     Reporter rpt;
 
     std::shared_ptr<ProtocolType> protocol_srv (new ProtocolTypeUDP(port));
-    Server srv (protocol_srv.get());
+    Server srv (protocol_srv);
 
     std::shared_ptr<ProtocolType> protocol_cln (new ProtocolTypeUDP(port));
-    Client cln (protocol_cln, ntw);
+    Client cln (protocol_cln, &ntw);
 
     Dispatcher disp (&srv, &cln, &rpt, &ntw);
     disp.run();

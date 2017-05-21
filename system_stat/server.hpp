@@ -36,7 +36,7 @@ private:
     bool favicon(const char* req); // this should not be here!!!
 
 public:
-    explicit Server(ProtocolType* protocol);
+    explicit Server(std::shared_ptr<ProtocolType> protocol);
     ~Server();
 
     //int closeSocketDescr(int &fd); // TODO: try to remove?

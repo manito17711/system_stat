@@ -24,7 +24,7 @@ void Network::addServer(const Node& n)
     servers.push_back(n);
 }
 
-Node& Network::getServer(std::size_t idx)
+const Node& Network::getServer(std::size_t idx) const
 {
     return servers[idx];
 }

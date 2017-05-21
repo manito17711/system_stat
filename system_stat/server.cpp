@@ -1,7 +1,7 @@
 #include "server.hpp"
 #include "errno.h"
 
-Server::Server(ProtocolType* protocol) : protocol(protocol)
+Server::Server(std::shared_ptr<ProtocolType> protocol) : protocol(protocol)
 {
     init();
 }
@@ -140,7 +140,7 @@ bool Server::favicon(const char* req)
 
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
-    protocol->setOnConn(func);
+    protocol->setOnConnection(func);
     //pFunc_onConn = func;
 }
 
@@ -237,6 +237,7 @@ void Server::init()
     */
 
     protocol->init();
+    protocol->bindSocket();
 
     std::cout << "Server initialized" << std::endl;
 }

@@ -6,6 +6,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <fcntl.h>
+#include <netdb.h>
 #include <memory>
 
 #include <functional>
@@ -25,14 +27,16 @@ public:
     virtual std::shared_ptr<ProtocolType> createObject() = 0;
 
 
-    const int& getSockFd() const;
+    int& getSockFd();
     const int& getPort() const;
-    const socklen_t& getSiLhsLength() const;
-    const struct sockaddr_in& getSiLhs() const;
-    const struct sockaddr_in& getSiRhs() const;
+    struct sockaddr_in& getSiLhs();
+    socklen_t& getSiRhsLength();
+    struct sockaddr_in& getSiRhs();
 
-
-    void setOnConn(std::function<void(int fd, ConnType type)> const &func);
+    void bindSocket();
+    void setSiRhs(std::__cxx11::string ipAddr, int port);
+    void setConnectionNonBlocking();
+    void setOnConnection(std::function<void(int fd, ConnType type)> const &func);
     int closeSocketFd();
 
 protected:
@@ -49,4 +53,7 @@ protected:
     ConnType defineConnectionType(const char* req); // define request - server or client.
 
     void clearBuff();
+
+private:
+    struct hostent *hp;
 };
