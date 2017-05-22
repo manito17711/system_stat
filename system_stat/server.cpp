@@ -112,27 +112,10 @@ void Server::startListen(std::size_t maxConn)
 }
 
 
-// should go in TCP file
-/*
-bool Server::favicon(const char* req)
-{
-    std::__cxx11::string r = std::__cxx11::string(req).substr(0, 12);
-    std::__cxx11::string favicon ("GET /favicon");
-
-    if (0 == r.compare(favicon))
-    {
-        return true;
-    }
-
-    return false;
-}*/
-
-
 
 void Server::setOnConn(std::function<void(int fd, ConnType type)> const &func)
 {
     protocol->setOnConnection(func);
-    //pFunc_onConn = func;
 }
 
 

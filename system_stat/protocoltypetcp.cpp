@@ -74,7 +74,7 @@ void ProtocolTypeTCP::initSocket()
 
 int ProtocolTypeTCP::sendData(int fd, const std::__cxx11::string &data)
 {
-    return -1;
+    return send(fd, data.c_str(), data.length(), 0);
 }
 
 

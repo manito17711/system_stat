@@ -63,16 +63,34 @@ void ProtocolType::setSiRhs(std::__cxx11::string ipAddr, int port)
     si_rhs_len = sizeof(si_rhs);
 }
 
+
+
 void ProtocolType::setConnectionNonBlocking()
 {
     // set connection non-blocking
     fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 }
 
+
+
+void ProtocolType::setSocketReusable()
+{
+    // set socket reusable
+    int enable = 1;
+    if (0 > setsockopt(sock_fd, SOL_SOCKET, SO_REUSEPORT, &enable, sizeof(int)))
+    {
+        // TDOD: log error in set socket reuse..
+    }
+}
+
+
+
 void ProtocolType::setOnConnection(const std::function<void (int, ConnType)> &func)
 {
     pFunc_onConn = func;
 }
+
+
 
 int ProtocolType::closeSocketFd()
 {
@@ -81,6 +99,8 @@ int ProtocolType::closeSocketFd()
 
     return result;
 }
+
+
 
 ConnType ProtocolType::defineConnectionType(const char* req)
 {
@@ -97,6 +117,8 @@ ConnType ProtocolType::defineConnectionType(const char* req)
 
     return t;
 }
+
+
 
 void ProtocolType::clearBuff()
 {

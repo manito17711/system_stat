@@ -35,6 +35,7 @@ public:
     void bindSocket();
     void setSiRhs(std::__cxx11::string ipAddr, int port);
     void setConnectionNonBlocking();
+    void setSocketReusable();
     void setOnConnection(std::function<void(int fd, ConnType type)> const &func);
     int closeSocketFd();
 

@@ -17,19 +17,25 @@ void ProtocolTypeUDP::startListen()
 
         si_rhs_len = sizeof(si_rhs);        
         const ssize_t received = recvfrom(sock_fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
-        printf("%s\n", buff);
+
+        if (!fork())
+        {
+            printf("%s\n", buff);
 
 
-        if (received > 0)
-        {
-            ConnType type = defineConnectionType(buff);
-            pFunc_onConn(sock_fd, type);
-        }
-        else
-        {
-            // TODO: log error
-            // std::cerr << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
-            exit(1);
+            if (received > 0)
+            {
+                ConnType type = defineConnectionType(buff);
+                pFunc_onConn(sock_fd, type);
+            }
+            else
+            {
+                // TODO: log error
+                // std::cerr << "Error: recvfrom() --errno: " << strerror(errno) << std::endl;
+                exit(1);
+            }
+
+            exit(0);
         }
     }
 }
