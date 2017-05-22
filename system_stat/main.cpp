@@ -10,8 +10,19 @@
 #include "protocoltypeudp.hpp"
 
 #include <memory>
+#include <signal.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 const std::size_t DEFAULT_PORT = 13651;
+
+void sigchld_handler(int s)
+{
+    int saved_errno = errno;
+    while(waitpid(-1, NULL, WNOHANG) > 0);
+
+    errno = saved_errno;
+}
 
 int main(int argc, char *argv[])
 {
@@ -19,6 +30,15 @@ int main(int argc, char *argv[])
     if (argc > 1)
     {
         port = std::atoi(argv[1]);
+    }
+
+    struct sigaction sa;
+    sa.sa_handler = sigchld_handler; // reap all dead processes
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
     }
 
 

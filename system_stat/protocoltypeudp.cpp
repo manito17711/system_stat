@@ -10,7 +10,7 @@ ProtocolTypeUDP::ProtocolTypeUDP(int port) : ProtocolType(port)
 
 
 void ProtocolTypeUDP::startListen()
-{
+{    
     for (;;)
     {
         clearBuff();
@@ -36,6 +36,10 @@ void ProtocolTypeUDP::startListen()
             }
 
             exit(0);
+        }
+        else
+        {
+            // TODO: log fork error
         }
     }
 }

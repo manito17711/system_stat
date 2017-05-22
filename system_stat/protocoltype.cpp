@@ -124,4 +124,3 @@ void ProtocolType::clearBuff()
 {
     memset(buff, 0, buff_size);
 }
-

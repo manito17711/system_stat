@@ -56,4 +56,5 @@ protected:
 
 private:
     struct hostent *hp;
+
 };
