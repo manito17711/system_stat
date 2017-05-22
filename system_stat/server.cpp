@@ -108,11 +108,12 @@ void Server::startListen(std::size_t maxConn)
         }
     }*/
 
-    protocol->listen();
+    protocol->startListen();
 }
 
 
 // should go in TCP file
+/*
 bool Server::favicon(const char* req)
 {
     std::__cxx11::string r = std::__cxx11::string(req).substr(0, 12);
@@ -124,7 +125,7 @@ bool Server::favicon(const char* req)
     }
 
     return false;
-}
+}*/
 
 
 

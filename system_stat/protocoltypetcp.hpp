@@ -8,12 +8,14 @@ class ProtocolTypeTCP : public ProtocolType
 public:
     ProtocolTypeTCP(int port);
 
-    virtual void listen();
+    virtual void startListen();
     virtual void initSocket();
     virtual int sendData(int fd, const std::__cxx11::string& data);
-    virtual int sendData(int fd, const std::__cxx11::string &data, sockaddr_in server);
     virtual int readData(int fd, std::__cxx11::string& str);
     virtual std::shared_ptr<ProtocolType> createObject();
+
+private:
+    bool favicon(const char* req);
 };
 
 #endif // PROTOCOLTYPETCP_H

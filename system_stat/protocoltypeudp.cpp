@@ -1,8 +1,15 @@
 #include "protocoltypeudp.hpp"
 
-ProtocolTypeUDP::ProtocolTypeUDP(int port) : ProtocolType(port) {}
 
-void ProtocolTypeUDP::listen()
+
+ProtocolTypeUDP::ProtocolTypeUDP(int port) : ProtocolType(port)
+{
+
+}
+
+
+
+void ProtocolTypeUDP::startListen()
 {
     for (;;)
     {
@@ -27,6 +34,8 @@ void ProtocolTypeUDP::listen()
     }
 }
 
+
+
 void ProtocolTypeUDP::initSocket()
 {
     // create a UDP socket
@@ -46,6 +55,8 @@ void ProtocolTypeUDP::initSocket()
 
 }
 
+
+
 int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data)
 {
     si_rhs_len = sizeof (si_rhs);
@@ -54,12 +65,7 @@ int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data)
     return send_data;
 }
 
-int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data, sockaddr_in server)
-{
-    si_rhs = server;
 
-    sendData(fd, data);
-}
 
 int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
 {
@@ -78,6 +84,8 @@ int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
 
     return received;
 }
+
+
 
 std::shared_ptr<ProtocolType> ProtocolTypeUDP::createObject()
 {

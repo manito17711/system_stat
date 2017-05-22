@@ -20,9 +20,8 @@ public:
     virtual ~ProtocolType();
 
     virtual void initSocket() = 0;
-    virtual void listen() = 0;
+    virtual void startListen() = 0;
     virtual int sendData(int fd, const std::__cxx11::string& data) = 0;
-    virtual int sendData(int fd, const std::__cxx11::string &data, sockaddr_in server) = 0;
     virtual int readData(int fd, std::__cxx11::string& str) = 0;
     virtual std::shared_ptr<ProtocolType> createObject() = 0;
 

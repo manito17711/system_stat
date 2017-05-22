@@ -58,7 +58,8 @@ bool Client::retrieveData()
     protocol->setConnectionNonBlocking();
 
     // send "SRV" to server - that is how we say to the server the request is not
-    /*buff[0] = 'S';
+    /*
+    buff[0] = 'S';
     buff[1] = 'R';
     buff[2] = 'V';
     buff[3] = '\0';*/
