@@ -104,6 +104,10 @@ int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
             strcpy(buff, "recvfrom() return -1\n\0");
             received = strlen(buff);
         }
+        else
+        {
+            str = buff;
+        }
     }
 
 
