@@ -55,7 +55,7 @@ void Client::init()
 bool Client::retrieveData()
 {
     protocol->initSocket();
-    protocol->setConnectionNonBlocking();
+    protocol->setBlockingTimeout(1000);
 
     // send "SRV" to server - that is how we say to the server the request is not
     /*
@@ -83,13 +83,12 @@ bool Client::retrieveData()
 
 
     // udp
+
     std::__cxx11::string data = "SRV";
 
     protocol->sendData(protocol->getSockFd(), data);
 
-    // printf("%s\n", inet_ntoa(protocol->getSiRhs().sin_addr));
-
-    sleep(1);
+    //sleep(1);
 
     auto received = protocol->readData(protocol->getSockFd(), data);
 

@@ -1,6 +1,9 @@
 #include "protocoltype.hpp"
 
-ProtocolType::ProtocolType(int port) : port(port) {}
+ProtocolType::ProtocolType(int port) : port(port)
+{
+
+}
 
 
 ProtocolType::~ProtocolType()
@@ -11,30 +14,42 @@ ProtocolType::~ProtocolType()
     }
 }
 
+
+
 int &ProtocolType::getSockFd()
 {
     return sock_fd;
 }
+
+
 
 const int &ProtocolType::getPort() const
 {
     return port;
 }
 
+
+
 sockaddr_in& ProtocolType::getSiLhs()
 {
     return si_lhs;
 }
+
+
 
 socklen_t &ProtocolType::getSiRhsLength()
 {
     return si_rhs_len;
 }
 
+
+
 sockaddr_in& ProtocolType::getSiRhs()
 {
     return si_rhs;
 }
+
+
 
 void ProtocolType::bindSocket()
 {
@@ -44,6 +59,8 @@ void ProtocolType::bindSocket()
         exit(1);
     }
 }
+
+
 
 void ProtocolType::setSiRhs(std::__cxx11::string ipAddr, int port)
 {
@@ -65,10 +82,12 @@ void ProtocolType::setSiRhs(std::__cxx11::string ipAddr, int port)
 
 
 
-void ProtocolType::setConnectionNonBlocking()
+void ProtocolType::setBlockingTimeout(int usec)
 {
     // set connection non-blocking
-    fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+    // fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+
+    pfd_tv = usec;
 }
 
 
@@ -104,13 +123,6 @@ int ProtocolType::closeSocketFd()
 
 ConnType ProtocolType::defineConnectionType(const char* req)
 {
-    int l = strlen(req);
-    if (3 > l)
-    {
-        // TODO: log error
-        exit(1);
-    }
-
     std::__cxx11::string firstThree = std::__cxx11::string(req).substr(0, 3);
 
     ConnType t = firstThree.compare("SRV") ? ConnType::client : ConnType::server;

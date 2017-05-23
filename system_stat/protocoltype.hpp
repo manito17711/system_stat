@@ -6,7 +6,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
-#include <fcntl.h>
+//#include <fcntl.h>
+#include <poll.h>
 #include <netdb.h>
 #include <memory>
 
@@ -34,7 +35,7 @@ public:
 
     void bindSocket();
     void setSiRhs(std::__cxx11::string ipAddr, int port);
-    void setConnectionNonBlocking();
+    void setBlockingTimeout(int usec);
     void setSocketReusable();
     void setOnConnection(std::function<void(int fd, ConnType type)> const &func);
     int closeSocketFd();
@@ -45,6 +46,9 @@ protected:
     struct sockaddr_in si_lhs;
     struct sockaddr_in si_rhs;
     socklen_t si_rhs_len;
+
+    struct pollfd pfd;
+    int pfd_rv, pfd_tv = 0;
 
     static const size_t buff_size = 1024;
     char buff[buff_size];
