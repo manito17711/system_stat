@@ -34,7 +34,7 @@ void Server::sendData(int fd, const std::__cxx11::string& data)
 
 
 
-void Server::startListen(std::size_t maxConn)
+void Server::startListen()
 {
     // tcp
     /*

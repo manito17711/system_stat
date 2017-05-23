@@ -23,16 +23,13 @@ private:
 
     void init();
 
-    // bool favicon(const char* req); // this should not be here!!!
-
 public:
     explicit Server(std::shared_ptr<ProtocolType> protocol);
     ~Server();
 
-    //int closeSocketDescr(int &fd); // TODO: try to remove?
     int closeServerSocketDescr();
 
-    void startListen(std::size_t maxConn = 5); // max conn = 5 - only for TCP connection..
+    void startListen();
     void sendData(int fd, const std::__cxx11::string& data);
     void setOnConn(std::function<void(int fd, ConnType type)> const &func);
 };
