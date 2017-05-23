@@ -18,7 +18,7 @@ void Client::init()
     }
 
     // set connection non-blocking
-    fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+    // fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
     // clear memory
     memset((char *) &si_other, 0, sizeof(si_other));
@@ -59,13 +59,38 @@ void Client::init()
         clear_buffer();
 
         // sleep for two seconds..
-        sleep(2);
+        // sleep(2);
 
         // try to retrieve data
-        if (-1 == recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &si_other, &slen))
+        /*if (-1 == recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &si_other, &slen))
+        {
+            strcpy(buff, "recvfrom() failed or server does not respond in 2 seconds!\n\0");
+        }*/
+
+        // set poll struct.. timeout 2 seconds
+        pfd.fd = sock_fd;
+        pfd.events = POLLIN;
+
+        pfd_rv = poll(&pfd, 1, 2000);
+        if (pfd_rv == -1)
+        {
+            // TODO: poll return error
+            exit(1);
+        }
+        else if (pfd_rv == 0)
         {
             strcpy(buff, "recvfrom() failed or server does not respond in 2 seconds!\n\0");
         }
+        else
+        {
+            int received = recvfrom(sock_fd, buff, BUFF_SIZE, 0, (struct sockaddr *) &si_other, &slen);
+            if (received == -1)
+            {
+                // TODO: error in recvfrom()
+                exit(1);
+            }
+        }
+
 
         std::cout << buff << std::endl;
     }

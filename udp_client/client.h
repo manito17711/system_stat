@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <unistd.h>
 
 class Client
@@ -21,9 +22,10 @@ private:
     const std::__cxx11::string SERVER;
     const int PORT;
 
+    struct pollfd pfd;
     struct sockaddr_in si_other;
     socklen_t slen;
-    int sock_fd, i;
+    int sock_fd, pfd_rv;
     char buff[BUFF_SIZE];
     char message[BUFF_SIZE];
 
