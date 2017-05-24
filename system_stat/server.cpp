@@ -20,15 +20,6 @@ Server::~Server()
 
 void Server::sendData(int fd, const std::__cxx11::string& data)
 {
-    // tcp
-    //send(fd, data.c_str(), strlen(data.c_str()), 0);
-
-
-    // udp
-    /*
-    sendto(sock_fd, data.c_str(), strlen(data.c_str()), 0, (struct sockaddr *) &(si_rhs), si_rhs_len);
-    std::cout << "data to send: " << data << std::endl;*/
-
     protocol->sendData(fd, data);
 }
 

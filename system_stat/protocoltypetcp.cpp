@@ -68,20 +68,68 @@ void ProtocolTypeTCP::initSocket()
 
         exit(1);
     }
+
+    // zero our the memory
+    memset((char*) &si_lhs, 0, sizeof(si_lhs));
+
+    si_lhs.sin_family = AF_INET;
+    si_lhs.sin_port = htons(port);
+    si_lhs.sin_addr.s_addr = htonl(INADDR_ANY);
 }
 
 
 
 int ProtocolTypeTCP::sendData(int fd, const std::__cxx11::string &data)
 {
+    si_rhs_len = sizeof(si_rhs);
+    if (0 > connect(fd, (struct sockaddr*) &si_rhs, si_rhs_len))
+    {
+        // TODO: log error
+        // std::cout << "ERROR: connecting to server..." << std::endl;
+        // std::cout << strerror(errno) << std::endl;
+
+        //return false;
+    }
+
     return send(fd, data.c_str(), data.length(), 0);
 }
 
 
 
-int ProtocolTypeTCP::readData(int fd, std::__cxx11::string &str)
+
+int ProtocolTypeTCP::readData(int fd, std::__cxx11::string &report)
 {
-    return -1;
+    clearBuff();
+
+    pfd.fd = sock_fd;
+    pfd.events = POLLIN;
+
+    pfd_rv = poll(&pfd, 1, pfd_tv);
+    ssize_t received = -1;
+    if (-1 == pfd_rv)
+    {
+        // TODO: poll return error
+        exit(1);
+    }
+    else if (0 == pfd_rv)
+    {
+        report = "Timeout! No data in 1 second!\0";
+        received = strlen(buff);
+    }
+    else
+    {
+        received = recv(fd, buff, buff_size, 0);
+        if (-1 == received)
+        {
+            report = "recvfrom() return -1\n\0";
+        }
+        else
+        {
+            report = buff;
+        }
+    }
+
+    return received;
 }
 
 

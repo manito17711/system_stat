@@ -1,9 +1,19 @@
 #include "network.hpp"
 
-
+//#define LOAD_TEST_SERVERS
 
 Network::Network()
 {
+#ifdef LOAD_TEST_SERVERS
+    // 6 testing servers..
+    for (int i = 140; i < 146; ++i)
+    {
+        std::string s = "192.168.194." + std::to_string(i);
+        addServer(s, 13651);
+    }
+
+    std::cout << "6 testing servers imported.\n";
+#endif
 }
 
 void Network::addServer(std::__cxx11::string ipAddr, std::size_t port)

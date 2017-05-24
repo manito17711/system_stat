@@ -84,21 +84,15 @@ bool Client::retrieveData()
 
     // udp
 
-    std::__cxx11::string data = "SRV";
+    report = "SRV";
 
-    protocol->sendData(protocol->getSockFd(), data);
+    protocol->sendData(protocol->getSockFd(), report);
 
-    //sleep(1);
-
-    auto received = protocol->readData(protocol->getSockFd(), data);
-
-    if (-1 == received)
-    {
-        report = "";
+    if (-1 == protocol->readData(protocol->getSockFd(), report))
+    {        
         return false;
     }
 
-    report = data;
     return true;
 }
 
@@ -120,7 +114,6 @@ void Client::collectAllReports()
     std::deque<std::shared_ptr<Client>> clients;
     std::deque<std::future<bool>> futuresReports;
 
-
     for (std::size_t i = 0; i < network->serversCount(); ++i)
     {
         std::shared_ptr<Client> newClient (this->createObject());
@@ -128,7 +121,7 @@ void Client::collectAllReports()
 
         futuresReports.push_back(std::async(std::launch::async, &Client::retrieveData, newClient.get()));
         clients.push_back(newClient);
-    }
+    }    
 
     for (std::size_t i = 0; i < futuresReports.size(); ++i)
     {

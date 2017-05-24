@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <future>
-
 #include "server.hpp"
 #include "client.hpp"
 #include "reporter.hpp"
@@ -12,7 +9,7 @@
 class Dispatcher
 {
 private:
-	Server *server;
+    Server *server;
     Client *client;
     Reporter *reporter;
     Network *network;
@@ -21,6 +18,6 @@ private:
 
 public:
     explicit Dispatcher(Server *srv, Client *cln, Reporter *rpt, Network *network);
-	
+
     void run();
 };

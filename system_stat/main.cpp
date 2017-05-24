@@ -16,13 +16,15 @@
 
 const std::size_t DEFAULT_PORT = 13651;
 
-void sigchld_handler(int s)
+void sigchld_handler(int)
 {
     int saved_errno = errno;
     while(waitpid(-1, NULL, WNOHANG) > 0);
 
     errno = saved_errno;
 }
+
+
 
 int main(int argc, char *argv[])
 {
@@ -41,17 +43,17 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-
-    //Server<ProtocolTypeUDP> srv;
-    //Client<ProtocolTypeUDP> cln;
+    // TODO:
+    // Server<ProtocolTypeUDP> srv;
+    // Client<ProtocolTypeUDP> cln;
 
     Network ntw;
     Reporter rpt;
 
-    std::shared_ptr<ProtocolType> protocol_srv (new ProtocolTypeUDP(port));
+    std::shared_ptr<ProtocolType> protocol_srv (new ProtocolTypeTCP(port));
     Server srv (protocol_srv);
 
-    std::shared_ptr<ProtocolType> protocol_cln (new ProtocolTypeUDP(port));
+    std::shared_ptr<ProtocolType> protocol_cln (new ProtocolTypeTCP(port));
     Client cln (protocol_cln, &ntw);
 
     Dispatcher disp (&srv, &cln, &rpt, &ntw);

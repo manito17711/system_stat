@@ -77,7 +77,7 @@ int ProtocolTypeUDP::sendData(int fd, const std::__cxx11::string &data)
 
 
 
-int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
+int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &report)
 {
     clearBuff();
 
@@ -93,7 +93,7 @@ int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
     }
     else if (0 == pfd_rv)
     {
-        strcpy(buff, "Timeout! No data in 2 seconds!\n\0");
+        report = "Timeout! No data in 1 second!\0";
         received = strlen(buff);
     }
     else
@@ -101,26 +101,13 @@ int ProtocolTypeUDP::readData(int fd, std::__cxx11::string &str)
         received = recvfrom(fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
         if (-1 == received)
         {
-            strcpy(buff, "recvfrom() return -1\n\0");
-            received = strlen(buff);
+            report = "recvfrom() return -1\n\0";
         }
         else
         {
-            str = buff;
+            report = buff;
         }
-    }
-
-
-    /*const ssize_t received = recvfrom(fd, buff, buff_size, 0, (struct sockaddr*) &si_rhs, &si_rhs_len);
-
-    if (-1 == received)
-    {
-        str = strerror(errno);
-    }
-    else
-    {
-        str = buff;
-    }*/
+    }   
 
     return received;
 }
