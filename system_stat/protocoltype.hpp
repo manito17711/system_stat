@@ -6,7 +6,6 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
-//#include <fcntl.h>
 #include <poll.h>
 #include <netdb.h>
 #include <memory>
@@ -60,5 +59,4 @@ protected:
 
 private:
     struct hostent *hp;
-
 };

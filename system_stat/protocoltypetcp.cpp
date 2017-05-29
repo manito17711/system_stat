@@ -1,5 +1,6 @@
 #include "protocoltypetcp.hpp"
 #include <iostream>
+#include <fcntl.h>
 
 
 ProtocolTypeTCP::ProtocolTypeTCP(int port) : ProtocolType(port)
@@ -81,19 +82,29 @@ void ProtocolTypeTCP::initSocket()
 
 int ProtocolTypeTCP::sendData(int fd, const std::__cxx11::string &data)
 {
-    si_rhs_len = sizeof(si_rhs);
-    if (0 > connect(fd, (struct sockaddr*) &si_rhs, si_rhs_len))
+    if (data.compare("SRV") == 0)
     {
-        // TODO: log error
-        // std::cout << "ERROR: connecting to server..." << std::endl;
-        // std::cout << strerror(errno) << std::endl;
+        // set descriptior to non-blocking... todo: try to avoid fcntl
+        int flags = fcntl(fd, F_GETFL);
+        if (fcntl(fd, F_SETFL, flags | O_NONBLOCK) == -1)
+        {
+            std::cout << "Err: fcntl\n";
+        }
 
-        //return false;
+        if (0 > connect(fd, (struct sockaddr*) &si_rhs, si_rhs_len))
+        {
+            // TODO: log error
+            // std::cout << "ERROR: connecting to server..." << std::endl;
+            // std::cout << strerror(errno) << std::endl;
+
+            //return false;
+        }
+
+
     }
 
     return send(fd, data.c_str(), data.length(), 0);
 }
-
 
 
 

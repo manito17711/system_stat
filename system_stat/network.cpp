@@ -1,6 +1,6 @@
 #include "network.hpp"
 
-//#define LOAD_TEST_SERVERS
+#define LOAD_TEST_SERVERS
 
 Network::Network()
 {
