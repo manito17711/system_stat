@@ -99,8 +99,6 @@ int ProtocolTypeTCP::sendData(int fd, const std::__cxx11::string &data)
 
             //return false;
         }
-
-
     }
 
     return send(fd, data.c_str(), data.length(), 0);
